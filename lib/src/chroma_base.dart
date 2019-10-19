@@ -52,13 +52,13 @@ abstract class Chroma {
   static int red(Color color) => color.red;
 
   /// Returns the green channel of a color as an integer between 0 and 255.
-  int green(Color color) => color.green;
+  static int green(Color color) => color.green;
 
   /// Returns the blue channel of a color as an integer between 0 and 255.
-  int blue(Color color) => color.blue;
+  static int blue(Color color) => color.blue;
 
   /// Generate a random fully opaque color.
-  Color random() {
+  static Color random() {
     const hexMax = 256 * 256 * 256;
     String color = (Random().nextDouble() * hexMax)
         .floor()
