@@ -12,8 +12,8 @@ void main() {
     expectedColor = Color(0xFFFF0099);
 
     test('Hexadecimal syntax', () {
-      //expect(chroma('#f09'), equals(expectedColor));
-      //expect(chroma('#F09'), equals(expectedColor));
+      expect(chroma('#f09'), equals(expectedColor));
+      expect(chroma('#F09'), equals(expectedColor));
       expect(chroma('#ff0099'), equals(expectedColor));
       expect(chroma('#FF0099'), equals(expectedColor));
     });

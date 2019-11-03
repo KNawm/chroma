@@ -1,26 +1,11 @@
 import 'dart:math';
 import 'dart:ui' show Color;
+import 'package:vector_math/vector_math.dart';
 
-/// TODO DOCS
-/// <rgb()> | <rgba()> | <hsl()> | <hsla()> |
-/// <hwb()> | <gray()> | <device-cmyk()> |
-/// <hex-color> | <named-color>
-Color chroma(color) {
-  String value = color;
-
-  value.toLowerCase();
-
-  if (value.startsWith('#')) {
-    value = value.replaceFirst('#', '');
-  }
-
-  value = 'ff' + value;
-
-  return Color(int.parse(value, radix: 16));
-}
+Color chroma(color) => Chroma.color(color);
 
 /// Alias of chroma().
-Color color(color) => chroma(color);
+Color color(color) => Chroma.color(color);
 
 /// The rgb() function defines an sRGB color by specifying the red, green,
 /// and blue channels directly. TODO
@@ -39,11 +24,21 @@ Color rgb(r, g, b, [a = 255]) {
 /// Alias of rgb().
 Color rgba(r, g, b, a) => rgb(r, g, b, a);
 
-void _throwEx(value, message) {
-  throw ArgumentError.value(value, message);
-}
-
 abstract class Chroma {
+  /// TODO DOCS
+  /// <rgb()> | <rgba()> | <hsl()> | <hsla()> |
+  /// <hwb()> | <gray()> | <device-cmyk()> |
+  /// <hex-color> | <named-color>
+  static Color color(value) {
+    /*Color named_color;
+    if (named_color.SetNamedColor(string)) {
+      color = named_color;
+      return true;
+    }*/
+
+    return _parseHexString(value);
+  }
+
   /// Returns the alpha channel of a color as an integer between 0 and 255.
   ///
   /// A value of 0 is fully transparent, and 255 is fully opaque.
@@ -72,6 +67,43 @@ abstract class Chroma {
         .toUpperCase()
         .padLeft(6, '0');
     return Color(0xFF + int.parse(color));
+  }
+
+  static Color _parseHexString(String value) {
+    String hexString = value.replaceFirst('#', '');
+    int r, g, b, a = 255;
+
+    if (hexString.length != 3 &&
+        hexString.length != 4 &&
+        hexString.length != 6 &&
+        hexString.length != 8 &&
+        !value.codeUnits.every(_isAsciiHexDigit)) {
+      throw FormatException('Could not parse hex color $value');
+    }
+
+    if (hexString.length >= 6) {
+      r = int.parse(hexString.substring(0, 2), radix: 16);
+      g = int.parse(hexString.substring(2, 4), radix: 16);
+      b = int.parse(hexString.substring(4, 6), radix: 16);
+      if (hexString.length == 8) {
+        a = int.parse(hexString.substring(6, 8), radix: 16);
+      }
+    } else {
+      r = int.parse(hexString.substring(0, 1) * 2, radix: 16);
+      g = int.parse(hexString.substring(1, 2) * 2, radix: 16);
+      b = int.parse(hexString.substring(2, 3) * 2, radix: 16);
+      if (hexString.length == 4) {
+        a = int.parse(hexString.substring(3, 4) * 2, radix: 16);
+      }
+    }
+
+    return Color.fromARGB(a, r, g, b);
+  }
+
+  static bool _isAsciiHexDigit(int c) {
+    return c >= 0x61 && c <= 0x66 ||
+        c >= 0x41 && c <= 0x46 ||
+        c >= 0x30 && c <= 0x39;
   }
 
   /// Returns a CSS string of a color.
