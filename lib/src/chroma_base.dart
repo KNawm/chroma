@@ -1,44 +1,10 @@
 import 'dart:math';
 import 'dart:ui' show Color;
-import 'package:vector_math/vector_math.dart';
 
 Color chroma(color) => Chroma.color(color);
-
-/// Alias of chroma().
-Color color(color) => Chroma.color(color);
-
-/// The rgb() function defines an sRGB color by specifying the red, green,
-/// and blue channels directly. TODO
-Color rgb(r, g, b, [a = 255]) {
-  List<dynamic> _rgba = List(4);
-  int _r, _g, _b, _a;
-
-  _rgba[0] = r;
-  _rgba[1] = g;
-  _rgba[2] = b;
-  _rgba[3] = a;
-
-  return Color.fromARGB(a, r, g, b);
-}
-
-/// Alias of rgb().
-Color rgba(r, g, b, a) => rgb(r, g, b, a);
+Color rgb(r, g, b, [a = 255]) => Chroma.rgb(r, g, b, a);
 
 abstract class Chroma {
-  /// TODO DOCS
-  /// <rgb()> | <rgba()> | <hsl()> | <hsla()> |
-  /// <hwb()> | <gray()> | <device-cmyk()> |
-  /// <hex-color> | <named-color>
-  static Color color(value) {
-    /*Color named_color;
-    if (named_color.SetNamedColor(string)) {
-      color = named_color;
-      return true;
-    }*/
-
-    return _parseHexString(value);
-  }
-
   /// Returns the alpha channel of a color as an integer between 0 and 255.
   ///
   /// A value of 0 is fully transparent, and 255 is fully opaque.
@@ -58,6 +24,29 @@ abstract class Chroma {
   /// Returns the blue channel of a color as an integer between 0 and 255.
   static int blue(Color color) => color.blue;
 
+  /// TODO DOCS
+  /// <rgb()> | <rgba()> | <hsl()> | <hsla()> |
+  /// <hwb()> | <gray()> | <device-cmyk()> |
+  /// <hex-color> | <named-color>
+  static Color color(value) {
+    /*Color named_color;
+    if (named_color.SetNamedColor(string)) {
+      color = named_color;
+      return true;
+    }*/
+
+    return _parseHexString(value);
+  }
+
+  /// The rgb() function defines an sRGB color by specifying the red, green,
+  /// and blue channels directly. TODO
+  static Color rgb(r, g, b, [a = 255]) {
+    return Color.fromARGB(a, r, g, b);
+  }
+
+  /// Alias of rgb().
+  static Color rgba(r, g, b, a) => rgb(r, g, b, a);
+
   /// Generate a random fully opaque color.
   static Color random() {
     const hexMax = 256 * 256 * 256;
@@ -73,11 +62,11 @@ abstract class Chroma {
     String hexString = value.replaceFirst('#', '');
     int r, g, b, a = 255;
 
-    if (hexString.length != 3 &&
-        hexString.length != 4 &&
-        hexString.length != 6 &&
-        hexString.length != 8 &&
-        !value.codeUnits.every(_isAsciiHexDigit)) {
+    if ((hexString.length != 3 &&
+            hexString.length != 4 &&
+            hexString.length != 6 &&
+            hexString.length != 8) ||
+        !hexString.codeUnits.every(_isAsciiHexDigit)) {
       throw FormatException('Could not parse hex color $value');
     }
 
@@ -100,11 +89,8 @@ abstract class Chroma {
     return Color.fromARGB(a, r, g, b);
   }
 
-  static bool _isAsciiHexDigit(int c) {
-    return c >= 0x61 && c <= 0x66 ||
-        c >= 0x41 && c <= 0x46 ||
-        c >= 0x30 && c <= 0x39;
-  }
+  static bool _isAsciiHexDigit(int c) =>
+      (c >= 97 && c <= 102) || (c >= 65 && c <= 70) || (c >= 48 && c <= 57);
 
   /// Returns a CSS string of a color.
   /*// TODO IMPLEMENT
