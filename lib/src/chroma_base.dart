@@ -1,50 +1,56 @@
 import 'dart:math';
 import 'dart:ui' show Color;
 
+/// TODO DOCS
+/// <rgb()> | <rgba()> | <hsl()> | <hsla()> |
+/// <hwb()> | <gray()> | <device-cmyk()> |
+/// <hex-color> | <named-color>
+Color chroma(color) {
+  String value = color;
+
+  value.toLowerCase();
+
+  if (value.startsWith('#')) {
+    value = value.replaceFirst('#', '');
+  }
+
+  value = 'ff' + value;
+
+  return Color(int.parse(value, radix: 16));
+}
+
+/// Alias of chroma().
+Color color(color) => chroma(color);
+
+/// The rgb() function defines an sRGB color by specifying the red, green,
+/// and blue channels directly. TODO
+Color rgb(r, g, b, [a = 255]) {
+  List<dynamic> _rgba = List(4);
+  int _r, _g, _b, _a;
+
+  _rgba[0] = r;
+  _rgba[1] = g;
+  _rgba[2] = b;
+  _rgba[3] = a;
+
+  return Color.fromARGB(a, r, g, b);
+}
+
+/// Alias of rgb().
+Color rgba(r, g, b, a) => rgb(r, g, b, a);
+
+void _throwEx(value, message) {
+  throw ArgumentError.value(value, message);
+}
+
 abstract class Chroma {
-  Color _currentColor = Color(0xFF000000);
-
-  /// TODO DOCS
-  /// <rgb()> | <rgba()> | <hsl()> | <hsla()> |
-  /// <hwb()> | <gray()> | <device-cmyk()> |
-  /// <hex-color> | <named-color>
-  Color chroma(color) {
-    String value = color;
-
-    value.toLowerCase();
-
-    if (value.startsWith('#')) {
-      value = value.replaceFirst('#', '');
-    }
-
-    return Color(int.parse(value, radix: 16));
-  }
-
-  /// The rgb() function defines an sRGB color by specifying the red, green,
-  /// and blue channels directly. TODO
-  Color rgb(r, g, b, [a = 255]) {
-    List<dynamic> _rgba = List(4);
-    int _r, _g, _b, _a;
-
-    _rgba[0] = r;
-    _rgba[1] = g;
-    _rgba[2] = b;
-    _rgba[3] = a;
-
-    return null;
-  }
-
-  Color rgba(r, g, b, a) => rgb(r, g, b, a);
-
-  void _throwEx(value, message) {
-    throw ArgumentError.value(value, message);
-  }
-
   /// Returns the alpha channel of a color as an integer between 0 and 255.
+  ///
   /// A value of 0 is fully transparent, and 255 is fully opaque.
   static int alpha(Color color) => color.alpha;
 
   /// Returns the alpha channel of a color as a double between 0 and 1.
+  ///
   /// A value of 0.0 is fully transparent, and 1.0 is fully opaque.
   static double opacity(Color color) => color.opacity;
 
@@ -68,7 +74,9 @@ abstract class Chroma {
     return Color(0xFF + int.parse(color));
   }
 
-  /*@override
+  /// Returns a CSS string of a color.
+  /*// TODO IMPLEMENT
+  @override
   String toString([colorSpace]) =>
       (colorSpace != null) ? 'rgb($r, $g, $b, $a)' : 'rgb($r, $g, $b, $a)';*/
 }
