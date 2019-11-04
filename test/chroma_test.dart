@@ -7,6 +7,7 @@ void main() {
   Color expectedColor;
 
   // TODO implementar tests https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
+  // https://meyerweb.com/eric/thoughts/2019/04/01/color-me-face1e55/
 
   group('RGB syntax parsing', () {
     expectedColor = Color(0xFFFF0099);

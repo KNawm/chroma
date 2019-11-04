@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui' show Color;
 
+import 'package:flutter/painting.dart';
+
 part 'named_colors.dart';
 
 Color chroma(color) => Chroma.color(color);
