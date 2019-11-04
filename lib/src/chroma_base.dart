@@ -1,10 +1,14 @@
 import 'dart:math';
 import 'dart:ui' show Color;
 
+part 'named_colors.dart';
+
 Color chroma(color) => Chroma.color(color);
 Color rgb(r, g, b, [a = 255]) => Chroma.rgb(r, g, b, a);
 
-abstract class Chroma {
+class Chroma {
+  Chroma._();
+
   /// Returns the alpha channel of a color as an integer between 0 and 255.
   ///
   /// A value of 0 is fully transparent, and 255 is fully opaque.
@@ -29,11 +33,10 @@ abstract class Chroma {
   /// <hwb()> | <gray()> | <device-cmyk()> |
   /// <hex-color> | <named-color>
   static Color color(value) {
-    /*Color named_color;
-    if (named_color.SetNamedColor(string)) {
-      color = named_color;
-      return true;
-    }*/
+    if (_isNamedColor(value)) {
+      return _namedColors.values
+          .firstWhere((name) => _namedColors[name] == value);
+    }
 
     return _parseHexString(value);
   }
@@ -91,6 +94,8 @@ abstract class Chroma {
 
   static bool _isAsciiHexDigit(int c) =>
       (c >= 97 && c <= 102) || (c >= 65 && c <= 70) || (c >= 48 && c <= 57);
+
+  static bool _isNamedColor(String value) => _namedColors.containsKey(value);
 
   /// Returns a CSS string of a color.
   /*// TODO IMPLEMENT
