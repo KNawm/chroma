@@ -1,8 +1,6 @@
 import 'dart:math';
 import 'dart:ui' show Color;
 
-import 'package:flutter/painting.dart';
-
 part 'named_colors.dart';
 
 Color chroma(color) => Chroma.color(color);
@@ -10,6 +8,9 @@ Color rgb(r, g, b, [a = 255]) => Chroma.rgb(r, g, b, a);
 
 class Chroma {
   Chroma._();
+
+  static const Color _black = Color(0xFF000000);
+  static const Color _white = Color(0xFFFFFFFF);
 
   /// Returns the alpha channel of a color as an integer between 0 and 255.
   ///
@@ -31,16 +32,12 @@ class Chroma {
   static int blue(Color color) => color.blue;
 
   /// TODO DOCS
-  /// <rgb()> | <rgba()> | <hsl()> | <hsla()> |
-  /// <hwb()> | <gray()> | <device-cmyk()> |
-  /// <hex-color> | <named-color>
-  static Color color(value) {
+  static Color color(String value) {
     if (_isNamedColor(value)) {
-      return _namedColors.values
-          .firstWhere((name) => _namedColors[name] == value);
+      return _namedColors[value];
+    } else {
+      return _parseHexString(value);
     }
-
-    return _parseHexString(value);
   }
 
   /// The rgb() function defines an sRGB color by specifying the red, green,
@@ -52,16 +49,10 @@ class Chroma {
   /// Alias of rgb().
   static Color rgba(r, g, b, a) => rgb(r, g, b, a);
 
-  /// Generate a random fully opaque color.
-  static Color random() {
-    const hexMax = 256 * 256 * 256;
-    String color = (Random().nextDouble() * hexMax)
-        .floor()
-        .toRadixString(16)
-        .toUpperCase()
-        .padLeft(6, '0');
-    return Color(0xFF + int.parse(color));
-  }
+  static bool _isNamedColor(String value) => _namedColors.containsKey(value);
+
+  static bool _isAsciiHexDigit(int c) =>
+      (c >= 97 && c <= 102) || (c >= 65 && c <= 70) || (c >= 48 && c <= 57);
 
   static Color _parseHexString(String value) {
     String hexString = value.replaceFirst('#', '');
@@ -94,10 +85,21 @@ class Chroma {
     return Color.fromARGB(a, r, g, b);
   }
 
-  static bool _isAsciiHexDigit(int c) =>
-      (c >= 97 && c <= 102) || (c >= 65 && c <= 70) || (c >= 48 && c <= 57);
+  /// Generate a random fully opaque color.
+  static Color random() {
+    const hexMax = 256 * 256 * 256;
+    int color = (Random().nextDouble() * hexMax).floor();
+    return Color(color + 0xFF000000);
+  }
 
-  static bool _isNamedColor(String value) => _namedColors.containsKey(value);
+  static Color contrastColor(Color color) {
+    // See <https://www.w3.org/TR/AERT/#color-contrast>
+    return ((color.red * 299) + (color.green * 587) + (color.blue * 114)) /
+                1000 >
+            125
+        ? _black
+        : _white;
+  }
 
   /// Returns a CSS string of a color.
   /*// TODO IMPLEMENT
