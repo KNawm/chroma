@@ -89,5 +89,22 @@ void main() {
 
       //todo write tests with out of range values
     });
+
+    test('hwb() syntax', () {
+      expect(Chroma.hwb(300, 0, 0, 1.0), colorFuchsia);
+      expect(Chroma.hwb(660, 0, 0, 1.0), colorFuchsia);
+      expect(
+          Chroma.hwb(300 * 200 / 180, 0, 0, 1, AngleUnits.grad), colorFuchsia);
+      expect(Chroma.hwb(300 * pi / 180, 0, 0, 1, AngleUnits.rad), colorFuchsia);
+      expect(Chroma.hwb(300 / 360, 0, 0, 1, AngleUnits.turn), colorFuchsia);
+
+      expect(Chroma.hwb(0, 0.665, 0.27, 0.666), colorSheep);
+
+      expect(Chroma.hwb(45, 0.729, 0.004, 0.8), colorFeedback);
+
+      expect(Chroma.hwba(300, 0, 0, 1.0), colorFuchsia);
+
+      //todo write tests with out of range values
+    });
   });
 }

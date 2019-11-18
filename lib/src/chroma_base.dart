@@ -140,6 +140,50 @@ class Chroma {
           [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
       hsl(hue, saturation, lightness, alpha, angleUnit);
 
+  static Color hwb(double hue, double whiteness, double blackness,
+      [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) {
+    var w = whiteness, b = blackness;
+    double h, s, v, a;
+
+    // Convert to degrees
+    switch (angleUnit) {
+      case AngleUnits.deg:
+        h = hue;
+        break;
+      case AngleUnits.grad:
+        h = hue * 180 / 200;
+        break;
+      case AngleUnits.rad:
+        h = hue * 180 / pi;
+        break;
+      case AngleUnits.turn:
+        h = hue * 360;
+        break;
+      default:
+        break;
+    }
+
+    // Normalize values to add up to 1.0
+    if (w + b > 1) {
+      var x = w + b;
+      w /= x;
+      b /= x;
+    }
+
+    // See [HWB color model](https://en.wikipedia.org/wiki/HWB_color_model)
+    h = h % 360; // [HSVColor.hue] range is [0.0, 360.0]
+    s = 1 - w / (1 - b);
+    v = 1 - b;
+    a = alpha.clamp(0.0, 1.0);
+
+    return HSVColor.fromAHSV(a, h, s, v).toColor();
+  }
+
+  /// Alias of hwb().
+  static Color hwba(double hue, double whiteness, double blackness,
+          [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
+      hwb(hue, whiteness, blackness, alpha, angleUnit);
+
   static bool _isNamedColor(String value) => _namedColors.containsKey(value);
 
   static bool _isAsciiHexDigit(int c) =>
