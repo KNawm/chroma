@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui' show Color;
 
+import 'package:flutter/painting.dart' show HSLColor, HSVColor;
+
 part 'named_colors.dart';
 
 Color chroma(color) => Chroma.color(color);
@@ -53,7 +55,7 @@ class Chroma {
         red = (r as int).clamp(0, 255);
         break;
       case double:
-        red = ((r as double).clamp(0, 1) * 255).round();
+        red = ((r as double).clamp(0.0, 1.0) * 255).round();
         break;
       default:
         throw ArgumentError('asdasdErrori');
@@ -65,7 +67,7 @@ class Chroma {
         green = (g as int).clamp(0, 255);
         break;
       case double:
-        green = ((g as double).clamp(0, 1) * 255).round();
+        green = ((g as double).clamp(0.0, 1.0) * 255).round();
         break;
       default:
         throw ArgumentError('asdasdErrori');
@@ -77,7 +79,7 @@ class Chroma {
         blue = (b as int).clamp(0, 255);
         break;
       case double:
-        blue = ((b as double).clamp(0, 1) * 255).round();
+        blue = ((b as double).clamp(0.0, 1.0) * 255).round();
         break;
       default:
         throw ArgumentError('asdasdErrori');
@@ -89,7 +91,7 @@ class Chroma {
         alpha = (a as int).clamp(0, 255);
         break;
       case double:
-        alpha = ((a as double).clamp(0, 1) * 255).round();
+        alpha = ((a as double).clamp(0.0, 1.0) * 255).round();
         break;
       default:
         throw ArgumentError('asdasdErrori');
@@ -101,6 +103,42 @@ class Chroma {
 
   /// Alias of rgb().
   static Color rgba(r, g, b, [a = 1.0]) => rgb(r, g, b, a);
+
+  /// TODO DOCS
+  static Color hsl(double hue, double saturation, double lightness,
+      [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) {
+    double h, s, l, a;
+
+    // Convert to degrees
+    switch (angleUnit) {
+      case AngleUnits.deg:
+        h = hue;
+        break;
+      case AngleUnits.grad:
+        h = hue * 180 / 200;
+        break;
+      case AngleUnits.rad:
+        h = hue * 180 / pi;
+        break;
+      case AngleUnits.turn:
+        h = hue * 360;
+        break;
+      default:
+        break;
+    }
+
+    h = h % 360; // [HSLColor.hue] range is [0.0, 360.0]
+    s = saturation.clamp(0.0, 1.0);
+    l = lightness.clamp(0.0, 1.0);
+    a = alpha.clamp(0.0, 1.0);
+
+    return HSLColor.fromAHSL(a, h, s, l).toColor();
+  }
+
+  /// Alias of hsl().
+  static Color hsla(double hue, double saturation, double lightness,
+          [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
+      hsl(hue, saturation, lightness, alpha, angleUnit);
 
   static bool _isNamedColor(String value) => _namedColors.containsKey(value);
 
@@ -167,3 +205,5 @@ class Chroma {
   }
    */
 }
+
+enum AngleUnits { deg, grad, rad, turn }

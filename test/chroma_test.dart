@@ -1,15 +1,18 @@
+import 'dart:math';
 import 'dart:ui' show Color;
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
+
 import 'package:chroma/chroma.dart';
 
 void main() {
-  // #f0f / rgb(255, 0, 255) / hsl(300, 100%, 50%)
+  // #f0f      / rgb(255, 0, 255)          / hsl(300, 100%, 50%)
   const colorFuchsia = Color(0xFFFF00FF);
-  // #baaaaaaa / rgba(186, 170, 170, 0.6666666666666666) / hsla(0, 10%, 70%, 0.6666666666666666)
+  // #baaaaaaa / rgb(186, 170, 170, 0.666) / hsl(0, 10.4%, 69.8%, 0.666)
   const colorSheep = Color(0xAABAAAAA);
-  // #feedbacc / rgba(254, 237, 186, 0.8) / hsla(45, 97%, 86%, 0.8)
-  const colorFeedback = Color(0xccfeedba);
+  // #feedbacc / rgb(254, 237, 186, 0.8)   / hsl(45, 97.1%, 86.3%, 0.8)
+  const colorFeedback = Color(0xCCFEEDBA);
 
   group('Syntax parsing', () {
     test('Named colors', () {
@@ -45,10 +48,13 @@ void main() {
       expect(() => chroma(' #feedbacc'), throwsFormatException);
     });
 
-    test('Functional syntax', () {
+    test('rgb() syntax', () {
       expect(Chroma.rgb(255, 0, 255), colorFuchsia);
       expect(Chroma.rgb(1.0, 0, 1.0), colorFuchsia);
       expect(Chroma.rgb(255, 0, 1.0), colorFuchsia);
+
+      // TODO FIX
+      //expect(Chroma.rgb(1e2, .5e1, .5e0, .25e2), Color(0xFFFF0099));
 
       expect(Chroma.rgb(186, 170, 170, 0.666), colorSheep);
       expect(Chroma.rgb(186, 0.666, 0.666, 0.666), colorSheep);
@@ -60,6 +66,28 @@ void main() {
       expect(Chroma.rgba(255, 0, 255), colorFuchsia);
       expect(Chroma.rgba(1.0, 0, 1.0), colorFuchsia);
       expect(Chroma.rgba(255, 0, 1.0), colorFuchsia);
+
+      //todo write tests with out of range values
+    });
+
+    test('hsl() syntax', () {
+      expect(Chroma.hsl(300, 1.0, 0.5, 1.0), colorFuchsia);
+      expect(Chroma.hsl(660, 1.0, 0.5, 1.0), colorFuchsia);
+      expect(
+          Chroma.hsl(300 * 200 / 180, 1, .5, 1, AngleUnits.grad), colorFuchsia);
+      expect(
+          Chroma.hsl(300 * pi / 180, 1, .5, 1, AngleUnits.rad), colorFuchsia);
+      expect(Chroma.hsl(300 / 360, 1.0, .5, 1, AngleUnits.turn), colorFuchsia);
+
+      expect(Chroma.hsl(0, 0.104, 0.698, 0.666), colorSheep);
+
+      expect(Chroma.hsl(45, 0.971, 0.863, 0.8), colorFeedback);
+
+      expect(Chroma.hsla(300, 1.0, 0.5, 1.0), colorFuchsia);
+      expect(Chroma.hsla(660, 1.0, 0.5, 1.0), colorFuchsia);
+      expect(Chroma.hsla(300 / 360, 1.0, .5, 1, AngleUnits.turn), colorFuchsia);
+
+      //todo write tests with out of range values
     });
   });
 }
