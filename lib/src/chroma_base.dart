@@ -4,7 +4,6 @@ import 'dart:ui' show Color;
 part 'named_colors.dart';
 
 Color chroma(color) => Chroma.color(color);
-Color rgb(r, g, b, [a = 255]) => Chroma.rgb(r, g, b, a);
 
 class Chroma {
   Chroma._();
@@ -33,6 +32,8 @@ class Chroma {
 
   /// TODO DOCS
   static Color color(String value) {
+    value = value.toLowerCase();
+
     if (_isNamedColor(value)) {
       return _namedColors[value];
     } else {
@@ -41,13 +42,65 @@ class Chroma {
   }
 
   /// The rgb() function defines an sRGB color by specifying the red, green,
-  /// and blue channels directly. TODO
-  static Color rgb(r, g, b, [a = 255]) {
-    return Color.fromARGB(a, r, g, b);
+  /// blue and alpha channels directly. TODO
+  ///
+  /// Out of range values are clamped.
+  static Color rgb(r, g, b, [a = 1.0]) {
+    var red, green, blue, alpha;
+
+    switch (r.runtimeType) {
+      case int:
+        red = (r as int).clamp(0, 255);
+        break;
+      case double:
+        red = ((r as double).clamp(0, 1) * 255).round();
+        break;
+      default:
+        throw ArgumentError('asdasdErrori');
+        break;
+    }
+
+    switch (g.runtimeType) {
+      case int:
+        green = (g as int).clamp(0, 255);
+        break;
+      case double:
+        green = ((g as double).clamp(0, 1) * 255).round();
+        break;
+      default:
+        throw ArgumentError('asdasdErrori');
+        break;
+    }
+
+    switch (b.runtimeType) {
+      case int:
+        blue = (b as int).clamp(0, 255);
+        break;
+      case double:
+        blue = ((b as double).clamp(0, 1) * 255).round();
+        break;
+      default:
+        throw ArgumentError('asdasdErrori');
+        break;
+    }
+
+    switch (a.runtimeType) {
+      case int:
+        alpha = (a as int).clamp(0, 255);
+        break;
+      case double:
+        alpha = ((a as double).clamp(0, 1) * 255).round();
+        break;
+      default:
+        throw ArgumentError('asdasdErrori');
+        break;
+    }
+
+    return Color.fromARGB(alpha, red, green, blue);
   }
 
   /// Alias of rgb().
-  static Color rgba(r, g, b, a) => rgb(r, g, b, a);
+  static Color rgba(r, g, b, [a = 1.0]) => rgb(r, g, b, a);
 
   static bool _isNamedColor(String value) => _namedColors.containsKey(value);
 
@@ -55,16 +108,18 @@ class Chroma {
       (c >= 97 && c <= 102) || (c >= 65 && c <= 70) || (c >= 48 && c <= 57);
 
   static Color _parseHexString(String value) {
-    String hexString = value.replaceFirst('#', '');
-    int r, g, b, a = 255;
+    int r, g, b, a;
+    var hexString = value.replaceFirst('#', '');
 
     if ((hexString.length != 3 &&
             hexString.length != 4 &&
             hexString.length != 6 &&
             hexString.length != 8) ||
         !hexString.codeUnits.every(_isAsciiHexDigit)) {
-      throw FormatException('Could not parse hex color $value');
+      throw FormatException('Could not parse hex color "$value"');
     }
+
+    a = 255; // Suppose it's an opaque color. If not we change this below.
 
     if (hexString.length >= 6) {
       r = int.parse(hexString.substring(0, 2), radix: 16);
@@ -88,22 +143,27 @@ class Chroma {
   /// Generate a random fully opaque color.
   static Color random() {
     const hexMax = 256 * 256 * 256;
-    int color = (Random().nextDouble() * hexMax).floor();
+    var color = (Random().nextDouble() * hexMax).floor();
     return Color(color + 0xFF000000);
   }
 
   static Color contrastColor(Color color) {
+    var r = color.red;
+    var g = color.green;
+    var b = color.blue;
+
     // See <https://www.w3.org/TR/AERT/#color-contrast>
-    return ((color.red * 299) + (color.green * 587) + (color.blue * 114)) /
-                1000 >
-            125
-        ? _black
-        : _white;
+    return ((r * 299) + (g * 587) + (b * 114)) / 1000 > 125 ? _black : _white;
   }
 
   /// Returns a CSS string of a color.
-  /*// TODO IMPLEMENT
+  ///
+// TODO implement
+/*
   @override
-  String toString([colorSpace]) =>
-      (colorSpace != null) ? 'rgb($r, $g, $b, $a)' : 'rgb($r, $g, $b, $a)';*/
+  // HEX, RGB, CMYK, HSV, HSL
+  String toString([{enum color space}]) {
+    return 'asd';
+  }
+   */
 }

@@ -4,62 +4,62 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:chroma/chroma.dart';
 
 void main() {
-  Color expectedColor;
+  // #f0f / rgb(255, 0, 255) / hsl(300, 100%, 50%)
+  const colorFuchsia = Color(0xFFFF00FF);
+  // #baaaaaaa / rgba(186, 170, 170, 0.6666666666666666) / hsla(0, 10%, 70%, 0.6666666666666666)
+  const colorSheep = Color(0xAABAAAAA);
+  // #feedbacc / rgba(254, 237, 186, 0.8) / hsla(45, 97%, 86%, 0.8)
+  const colorFeedback = Color(0xccfeedba);
 
-  // TODO implementar tests https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
-  // https://meyerweb.com/eric/thoughts/2019/04/01/color-me-face1e55/
+  group('Syntax parsing', () {
+    test('Named colors', () {
+      expect(chroma('fuchsia'), colorFuchsia);
+      expect(chroma('FUCHSIA'), colorFuchsia);
 
-  group('RGB syntax parsing', () {
-    expectedColor = Color(0xFFFF0099);
+      expect(() => chroma('fuchsias'), throwsFormatException);
+    });
 
     test('Hexadecimal syntax', () {
-      expect(chroma('#f09'), expectedColor);
-      expect(chroma('#F09'), expectedColor);
-      expect(chroma('#ff0099'), expectedColor);
-      expect(chroma('#FF0099'), expectedColor);
-      expect(chroma('#0000ffff'), Color.fromRGBO(0, 0, 255, 1));
-      expect(chroma('#0000ff00'), Color.fromRGBO(0, 0, 255, 0));
-      expect(chroma('#00ff'), Color.fromRGBO(0, 0, 255, 1));
-      expect(chroma('#00f0'), Color.fromRGBO(0, 0, 255, 0));
-      expect(chroma('#f00f'), Color.fromRGBO(255, 0, 0, 1));
-      expect(chroma('#0f0f'), Color.fromRGBO(0, 255, 0, 1));
-      expect(chroma('#ff0000ff'), Color.fromRGBO(255, 0, 0, 1));
-      expect(chroma('#00ff00ff'), Color.fromRGBO(0, 255, 0, 1));
-      expect(chroma('#00f8'), Color.fromRGBO(0, 255, 0, 1));
+      expect(chroma('#FF00FF'), colorFuchsia);
+      expect(chroma('#F0F'), colorFuchsia);
+      expect(chroma('#FF00FFFF'), colorFuchsia);
+      expect(chroma('#F0FF'), colorFuchsia);
+
+      expect(chroma('#ff00ff'), colorFuchsia);
+      expect(chroma('#f0f'), colorFuchsia);
+      expect(chroma('#ff00ffff'), colorFuchsia);
+      expect(chroma('#f0ff'), colorFuchsia);
+
+      expect(chroma('FF00FF'), colorFuchsia);
+      expect(chroma('F0F'), colorFuchsia);
+      expect(chroma('FF00FFFF'), colorFuchsia);
+      expect(chroma('F0FF'), colorFuchsia);
+
+      expect(chroma('ff00ff'), colorFuchsia);
+      expect(chroma('f0f'), colorFuchsia);
+      expect(chroma('ff00ffff'), colorFuchsia);
+      expect(chroma('f0ff'), colorFuchsia);
+
+      expect(() => chroma('asd'), throwsFormatException);
+      expect(() => chroma('#baaaaaaa '), throwsFormatException);
+      expect(() => chroma(' #feedbacc'), throwsFormatException);
     });
 
     test('Functional syntax', () {
-      expect(rgb(255, 0, 153), expectedColor);
-      expect(rgb(255, 0, 153), expectedColor);
-      /*expect(rgb(255, 0, 153.0), expectedColor));
-      expect(rgb(100%,0%,60%), expectedColor));
-      expect(rgb(100%, 0%, 60%), expectedColor));
-      expect(rgb(100%, 0, 60%), expectedColor));
-      expect(rgb(255 0 153), expectedColor));
-      expect(rgb(100%,0%,60%), expectedColor));*/
-    });
+      expect(Chroma.rgb(255, 0, 255), colorFuchsia);
+      expect(Chroma.rgb(1.0, 0, 1.0), colorFuchsia);
+      expect(Chroma.rgb(255, 0, 1.0), colorFuchsia);
 
-    test('Hexadecimal syntax with alpha value', () {
-      expect(chroma('#f09f'), expectedColor);
-      expect(chroma('#F09F'), expectedColor);
-      expect(chroma('#ff0099ff'), expectedColor);
-      expect(chroma('#FF0099FF'), expectedColor);
-    });
+      expect(Chroma.rgb(186, 170, 170, 0.666), colorSheep);
+      expect(Chroma.rgb(186, 0.666, 0.666, 0.666), colorSheep);
+      expect(Chroma.rgb((186 / 255), 170, 170, 170), colorSheep);
 
-    /* NOT IMPLEMENTED YET
-    test('Functional syntax with alpha value', () {
-      expect(rgb(255, 0, 153, 1), expectedColor));
-      expect(rgb(255, 0, 153, 100%), expectedColor));
-    });
+      expect(Chroma.rgb(254, 237, 186, 0.8), colorFeedback);
+      expect(Chroma.rgb(254, 237, 186, 204), colorFeedback);
 
-    test('Whitespace syntax', () {
-      expect(rgb(255 0 153 / 1), expectedColor));
-      expect(rgb(255 0 153 / 100%), expectedColor));
+      expect(Chroma.rgba(255, 0, 255), colorFuchsia);
+      expect(Chroma.rgba(1.0, 0, 1.0), colorFuchsia);
+      expect(Chroma.rgba(255, 0, 1.0), colorFuchsia);
     });
-
-    test('Functional syntax with floats value', () {
-      expect(rgb(255, 0, 153.6, 1), expectedColor));
-      expect(rgb(1e2, .5e1, .5e0, +.25e2%), expectedColor));
-    });*/
   });
 }
