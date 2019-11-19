@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math' as math;
 import 'dart:ui' show Color;
 
 import 'package:flutter/painting.dart' show HSLColor, HSVColor;
@@ -7,13 +7,17 @@ part 'named_colors.dart';
 
 Color chroma(color) => Chroma.color(color);
 
-class Chroma {
-  Chroma._();
+class Chroma extends Color {
+  //Chroma._();
+
+  var test;
+
+  Chroma(String value) : super.fromARGB(1);
 
   static const Color _black = Color(0xFF000000);
   static const Color _white = Color(0xFFFFFFFF);
 
-  /// Returns the alpha channel of a color as an integer between 0 and 255.
+  /*/// Returns the alpha channel of a color as an integer between 0 and 255.
   ///
   /// A value of 0 is fully transparent, and 255 is fully opaque.
   static int alpha(Color color) => color.alpha;
@@ -30,7 +34,7 @@ class Chroma {
   static int green(Color color) => color.green;
 
   /// Returns the blue channel of a color as an integer between 0 and 255.
-  static int blue(Color color) => color.blue;
+  static int blue(Color color) => color.blue;*/
 
   /// TODO DOCS
   static Color color(String value) {
@@ -58,7 +62,7 @@ class Chroma {
         red = ((r as double).clamp(0.0, 1.0) * 255).round();
         break;
       default:
-        throw ArgumentError('asdasdErrori');
+        throw ArgumentError('The \'r\' argument must be an int or a double.');
         break;
     }
 
@@ -70,7 +74,7 @@ class Chroma {
         green = ((g as double).clamp(0.0, 1.0) * 255).round();
         break;
       default:
-        throw ArgumentError('asdasdErrori');
+        throw ArgumentError('The \'g\' argument must be an int or a double.');
         break;
     }
 
@@ -82,7 +86,7 @@ class Chroma {
         blue = ((b as double).clamp(0.0, 1.0) * 255).round();
         break;
       default:
-        throw ArgumentError('asdasdErrori');
+        throw ArgumentError('The \'b\' argument must be an int or a double.');
         break;
     }
 
@@ -94,7 +98,7 @@ class Chroma {
         alpha = ((a as double).clamp(0.0, 1.0) * 255).round();
         break;
       default:
-        throw ArgumentError('asdasdErrori');
+        throw ArgumentError('The \'a\' argument must be an int or a double.');
         break;
     }
 
@@ -118,7 +122,7 @@ class Chroma {
         h = hue * 180 / 200;
         break;
       case AngleUnits.rad:
-        h = hue * 180 / pi;
+        h = hue * 180 / math.pi;
         break;
       case AngleUnits.turn:
         h = hue * 360;
@@ -154,7 +158,7 @@ class Chroma {
         h = hue * 180 / 200;
         break;
       case AngleUnits.rad:
-        h = hue * 180 / pi;
+        h = hue * 180 / math.pi;
         break;
       case AngleUnits.turn:
         h = hue * 360;
@@ -198,7 +202,7 @@ class Chroma {
             hexString.length != 6 &&
             hexString.length != 8) ||
         !hexString.codeUnits.every(_isAsciiHexDigit)) {
-      throw FormatException('Could not parse hex color "$value"');
+      throw FormatException('Could not parse hex color \'$value\'');
     }
 
     a = 255; // Suppose it's an opaque color. If not we change this below.
@@ -225,7 +229,7 @@ class Chroma {
   /// Generate a random fully opaque color.
   static Color random() {
     const hexMax = 256 * 256 * 256;
-    var color = (Random().nextDouble() * hexMax).floor();
+    var color = (math.Random().nextDouble() * hexMax).floor();
     return Color(color + 0xFF000000);
   }
 
