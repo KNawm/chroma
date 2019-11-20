@@ -7,102 +7,96 @@ import 'package:flutter/material.dart';
 import 'package:chroma/chroma.dart';
 
 void main() {
-  // #f0f      / rgb(255, 0, 255)          / hsl(300, 100%, 50%)
-  const colorFuchsia = Color(0xFFFF00FF);
-  // #baaaaaaa / rgb(186, 170, 170, 0.666) / hsl(0, 10.4%, 69.8%, 0.666)
-  const colorSheep = Color(0xAABAAAAA);
-  // #feedbacc / rgb(254, 237, 186, 0.8)   / hsl(45, 97.1%, 86.3%, 0.8)
-  const colorFeedback = Color(0xCCFEEDBA);
+  // #f0f      / fromRGB(255, 0, 255)          / fromHSL(300, 100%, 50%)
+  final colorFuchsia = Color(0xFFFF00FF).hashCode;
+  // #baaaaaaa / fromRGB(186, 170, 170, 0.666) / fromHSL(0, 10.4%, 69.8%, 0.666)
+  final colorSheep = Color(0xAABAAAAA).hashCode;
+  // #feedbacc / fromRGB(254, 237, 186, 0.8)   / fromHSL(45, 97.1%, 86.3%, 0.8)
+  final colorFeedback = Color(0xCCFEEDBA).hashCode;
 
   group('Syntax parsing', () {
     test('Named colors', () {
-      expect(chroma('fuchsia'), colorFuchsia);
-      expect(chroma('FUCHSIA'), colorFuchsia);
+      expect(Chroma('fuchsia').hashCode, colorFuchsia);
+      expect(Chroma('FUCHSIA').hashCode, colorFuchsia);
 
-      expect(() => chroma('fuchsias'), throwsFormatException);
+      expect(() => Chroma('fuchsias'), throwsFormatException);
     });
 
     test('Hexadecimal syntax', () {
-      expect(chroma('#FF00FF'), colorFuchsia);
-      expect(chroma('#F0F'), colorFuchsia);
-      expect(chroma('#FF00FFFF'), colorFuchsia);
-      expect(chroma('#F0FF'), colorFuchsia);
+      expect(Chroma('#FF00FF').hashCode, colorFuchsia);
+      expect(Chroma('#F0F').hashCode, colorFuchsia);
+      expect(Chroma('#FF00FFFF').hashCode, colorFuchsia);
+      expect(Chroma('#F0FF').hashCode, colorFuchsia);
 
-      expect(chroma('#ff00ff'), colorFuchsia);
-      expect(chroma('#f0f'), colorFuchsia);
-      expect(chroma('#ff00ffff'), colorFuchsia);
-      expect(chroma('#f0ff'), colorFuchsia);
+      expect(Chroma('#ff00ff').hashCode, colorFuchsia);
+      expect(Chroma('#f0f').hashCode, colorFuchsia);
+      expect(Chroma('#ff00ffff').hashCode, colorFuchsia);
+      expect(Chroma('#f0ff').hashCode, colorFuchsia);
 
-      expect(chroma('FF00FF'), colorFuchsia);
-      expect(chroma('F0F'), colorFuchsia);
-      expect(chroma('FF00FFFF'), colorFuchsia);
-      expect(chroma('F0FF'), colorFuchsia);
+      expect(Chroma('FF00FF').hashCode, colorFuchsia);
+      expect(Chroma('F0F').hashCode, colorFuchsia);
+      expect(Chroma('FF00FFFF').hashCode, colorFuchsia);
+      expect(Chroma('F0FF').hashCode, colorFuchsia);
 
-      expect(chroma('ff00ff'), colorFuchsia);
-      expect(chroma('f0f'), colorFuchsia);
-      expect(chroma('ff00ffff'), colorFuchsia);
-      expect(chroma('f0ff'), colorFuchsia);
+      expect(Chroma('ff00ff').hashCode, colorFuchsia);
+      expect(Chroma('f0f').hashCode, colorFuchsia);
+      expect(Chroma('ff00ffff').hashCode, colorFuchsia);
+      expect(Chroma('f0ff').hashCode, colorFuchsia);
 
-      expect(() => chroma('asd'), throwsFormatException);
-      expect(() => chroma('#baaaaaaa '), throwsFormatException);
-      expect(() => chroma(' #feedbacc'), throwsFormatException);
+      expect(() => Chroma('asd'), throwsFormatException);
+      expect(() => Chroma('#baaaaaaa '), throwsFormatException);
+      expect(() => Chroma(' #feedbacc'), throwsFormatException);
     });
 
-    test('rgb() syntax', () {
-      expect(Chroma.rgb(255, 0, 255), colorFuchsia);
-      expect(Chroma.rgb(1.0, 0, 1.0), colorFuchsia);
-      expect(Chroma.rgb(255, 0, 1.0), colorFuchsia);
+    test('RGB syntax', () {
+      expect(Chroma.fromRGB(255, 0, 255).hashCode, colorFuchsia);
+      expect(Chroma.fromRGB(1.0, 0, 1.0).hashCode, colorFuchsia);
+      expect(Chroma.fromRGB(255, 0, 1.0).hashCode, colorFuchsia);
 
       // TODO FIX
-      //expect(Chroma.rgb(1e2, .5e1, .5e0, .25e2), Color(0xFFFF0099));
+      //expect(Chroma.fromRGB(1e2, .5e1, .5e0, .25e2).hashCode, Color(0xFFFF0099));
 
-      expect(Chroma.rgb(186, 170, 170, 0.666), colorSheep);
-      expect(Chroma.rgb(186, 0.666, 0.666, 0.666), colorSheep);
-      expect(Chroma.rgb((186 / 255), 170, 170, 170), colorSheep);
+      expect(Chroma.fromRGB(186, 170, 170, 0.666).hashCode, colorSheep);
+      expect(Chroma.fromRGB(186, 0.666, 0.666, 0.666).hashCode, colorSheep);
+      expect(Chroma.fromRGB((186 / 255), 170, 170, 170).hashCode, colorSheep);
 
-      expect(Chroma.rgb(254, 237, 186, 0.8), colorFeedback);
-      expect(Chroma.rgb(254, 237, 186, 204), colorFeedback);
-
-      expect(Chroma.rgba(255, 0, 255), colorFuchsia);
-      expect(Chroma.rgba(1.0, 0, 1.0), colorFuchsia);
-      expect(Chroma.rgba(255, 0, 1.0), colorFuchsia);
+      expect(Chroma.fromRGB(254, 237, 186, 0.8).hashCode, colorFeedback);
+      expect(Chroma.fromRGB(254, 237, 186, 204).hashCode, colorFeedback);
 
       //todo write tests with out of range values
     });
 
-    test('hsl() syntax', () {
-      expect(Chroma.hsl(300, 1.0, 0.5, 1.0), colorFuchsia);
-      expect(Chroma.hsl(660, 1.0, 0.5, 1.0), colorFuchsia);
+    test('HSL syntax', () {
+      expect(Chroma.fromHSL(300, 1.0, 0.5, 1.0).hashCode, colorFuchsia);
+      expect(Chroma.fromHSL(660, 1.0, 0.5, 1.0).hashCode, colorFuchsia);
       expect(
-          Chroma.hsl(300 * 200 / 180, 1, .5, 1, AngleUnits.grad), colorFuchsia);
-      expect(
-          Chroma.hsl(300 * pi / 180, 1, .5, 1, AngleUnits.rad), colorFuchsia);
-      expect(Chroma.hsl(300 / 360, 1.0, .5, 1, AngleUnits.turn), colorFuchsia);
+          Chroma.fromHSL(300 * 200 / 180, 1, .5, 1, AngleUnits.grad).hashCode,
+          colorFuchsia);
+      expect(Chroma.fromHSL(300 * pi / 180, 1, .5, 1, AngleUnits.rad).hashCode,
+          colorFuchsia);
+      expect(Chroma.fromHSL(300 / 360, 1.0, .5, 1, AngleUnits.turn).hashCode,
+          colorFuchsia);
 
-      expect(Chroma.hsl(0, 0.104, 0.698, 0.666), colorSheep);
+      expect(Chroma.fromHSL(0, 0.104, 0.698, 0.666).hashCode, colorSheep);
 
-      expect(Chroma.hsl(45, 0.971, 0.863, 0.8), colorFeedback);
-
-      expect(Chroma.hsla(300, 1.0, 0.5, 1.0), colorFuchsia);
-      expect(Chroma.hsla(660, 1.0, 0.5, 1.0), colorFuchsia);
-      expect(Chroma.hsla(300 / 360, 1.0, .5, 1, AngleUnits.turn), colorFuchsia);
+      expect(Chroma.fromHSL(45, 0.971, 0.863, 0.8).hashCode, colorFeedback);
 
       //todo write tests with out of range values
     });
 
-    test('hwb() syntax', () {
-      expect(Chroma.hwb(300, 0, 0, 1.0), colorFuchsia);
-      expect(Chroma.hwb(660, 0, 0, 1.0), colorFuchsia);
-      expect(
-          Chroma.hwb(300 * 200 / 180, 0, 0, 1, AngleUnits.grad), colorFuchsia);
-      expect(Chroma.hwb(300 * pi / 180, 0, 0, 1, AngleUnits.rad), colorFuchsia);
-      expect(Chroma.hwb(300 / 360, 0, 0, 1, AngleUnits.turn), colorFuchsia);
+    test('HWB syntax', () {
+      expect(Chroma.fromHWB(300, 0, 0, 1.0).hashCode, colorFuchsia);
+      expect(Chroma.fromHWB(660, 0, 0, 1.0).hashCode, colorFuchsia);
+      expect(Chroma.fromHWB(300 * 200 / 180, 0, 0, 1, AngleUnits.grad).hashCode,
+          colorFuchsia);
+      expect(Chroma.fromHWB(300 * pi / 180, 0, 0, 1, AngleUnits.rad).hashCode,
+          colorFuchsia);
+      expect(Chroma.fromHWB(300 / 360, 0, 0, 1, AngleUnits.turn).hashCode,
+          colorFuchsia);
 
-      expect(Chroma.hwb(0, 0.665, 0.27, 0.666), colorSheep);
+      expect(Chroma.fromHWB(0, 0.665, 0.27, 0.666).hashCode, colorSheep);
 
-      expect(Chroma.hwb(45, 0.729, 0.004, 0.8), colorFeedback);
-
-      expect(Chroma.hwba(300, 0, 0, 1.0), colorFuchsia);
+      expect(Chroma.fromHWB(45, 0.729, 0.004, 0.8).hashCode, colorFeedback);
 
       //todo write tests with out of range values
     });

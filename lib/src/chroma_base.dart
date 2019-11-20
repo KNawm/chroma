@@ -1,18 +1,80 @@
 import 'dart:math' as math;
 import 'dart:ui' show Color;
 
-import 'package:flutter/painting.dart' show HSLColor, HSVColor;
+import 'package:vector_math/vector_math.dart';
 
-part 'named_colors.dart';
-
-Color chroma(color) => Chroma.color(color);
+import 'color/parser.dart' as parse;
 
 class Chroma extends Color {
-  //Chroma._();
+  _colorFormats _colorFormat;
 
-  var test;
+  // ignore: public_member_api_docs
+  Chroma(String color)
+      : assert(color.isNotEmpty),
+        _colorFormat = _colorFormats.HEX,
+        super(parse.fromString(color));
 
-  Chroma(String value) : super.fromARGB(1);
+  /// The rgb() function defines an sRGB color by specifying the red, green,
+  /// blue and alpha channels directly. TODO
+  ///
+  /// Out of range values are clamped.
+  /// Representation of RGBA colors.
+  //
+  //This structure is used throughout Unity to pass colors around. Each color component is a floating point value with a range from 0 to 1.
+  //
+  //Components (r,g,b) define a color in RGB color space. Alpha component (a) defines transparency - alpha of one is completely opaque, alpha of zero is completely transparent.
+  // ignore: public_member_api_docs
+  Chroma.fromRGB(num red, num green, num blue, [num alpha = 1.0])
+      : assert(red.runtimeType == double
+            ? (red >= 0.0 && red <= 1.0)
+            : (red >= 0 && red <= 255)),
+        assert(green.runtimeType == double
+            ? (green >= 0.0 && green <= 1.0)
+            : (green >= 0 && green <= 255)),
+        assert(blue.runtimeType == double
+            ? (blue >= 0.0 && blue <= 1.0)
+            : (blue >= 0 && blue <= 255)),
+        assert(alpha.runtimeType == double
+            ? (alpha >= 0.0 && alpha <= 1.0)
+            : (alpha >= 0 && alpha <= 255)),
+        _colorFormat = _colorFormats.RGB,
+        super(parse.fromRGB(red, green, blue, alpha));
+
+  // ignore: public_member_api_docs
+  Chroma.fromHSL(double hue, double saturation, double lightness,
+      [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg])
+      : assert(saturation >= 0.0),
+        assert(saturation <= 1.0),
+        assert(lightness >= 0.0),
+        assert(lightness <= 1.0),
+        assert(alpha >= 0.0),
+        assert(alpha <= 1.0),
+        _colorFormat = _colorFormats.HSL,
+        super(parse.fromHSL(hue, saturation, lightness, alpha, angleUnit));
+
+  // ignore: public_member_api_docs
+  Chroma.fromHSV(double hue, double saturation, double value,
+      [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg])
+      : assert(saturation >= 0.0),
+        assert(saturation <= 1.0),
+        assert(value >= 0.0),
+        assert(value <= 1.0),
+        assert(alpha >= 0.0),
+        assert(alpha <= 1.0),
+        _colorFormat = _colorFormats.HSV,
+        super(parse.fromHSV(hue, saturation, value, alpha, angleUnit));
+
+  // ignore: public_member_api_docs
+  Chroma.fromHWB(double hue, double whiteness, double blackness,
+      [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg])
+      : assert(whiteness >= 0.0),
+        assert(whiteness <= 1.0),
+        assert(blackness >= 0.0),
+        assert(blackness <= 1.0),
+        assert(alpha >= 0.0),
+        assert(alpha <= 1.0),
+        _colorFormat = _colorFormats.HWB,
+        super(parse.fromHWB(hue, whiteness, blackness, alpha, angleUnit));
 
   static const Color _black = Color(0xFF000000);
   static const Color _white = Color(0xFFFFFFFF);
@@ -36,196 +98,6 @@ class Chroma extends Color {
   /// Returns the blue channel of a color as an integer between 0 and 255.
   static int blue(Color color) => color.blue;*/
 
-  /// TODO DOCS
-  static Color color(String value) {
-    value = value.toLowerCase();
-
-    if (_isNamedColor(value)) {
-      return _namedColors[value];
-    } else {
-      return _parseHexString(value);
-    }
-  }
-
-  /// The rgb() function defines an sRGB color by specifying the red, green,
-  /// blue and alpha channels directly. TODO
-  ///
-  /// Out of range values are clamped.
-  static Color rgb(r, g, b, [a = 1.0]) {
-    var red, green, blue, alpha;
-
-    switch (r.runtimeType) {
-      case int:
-        red = (r as int).clamp(0, 255);
-        break;
-      case double:
-        red = ((r as double).clamp(0.0, 1.0) * 255).round();
-        break;
-      default:
-        throw ArgumentError('The \'r\' argument must be an int or a double.');
-        break;
-    }
-
-    switch (g.runtimeType) {
-      case int:
-        green = (g as int).clamp(0, 255);
-        break;
-      case double:
-        green = ((g as double).clamp(0.0, 1.0) * 255).round();
-        break;
-      default:
-        throw ArgumentError('The \'g\' argument must be an int or a double.');
-        break;
-    }
-
-    switch (b.runtimeType) {
-      case int:
-        blue = (b as int).clamp(0, 255);
-        break;
-      case double:
-        blue = ((b as double).clamp(0.0, 1.0) * 255).round();
-        break;
-      default:
-        throw ArgumentError('The \'b\' argument must be an int or a double.');
-        break;
-    }
-
-    switch (a.runtimeType) {
-      case int:
-        alpha = (a as int).clamp(0, 255);
-        break;
-      case double:
-        alpha = ((a as double).clamp(0.0, 1.0) * 255).round();
-        break;
-      default:
-        throw ArgumentError('The \'a\' argument must be an int or a double.');
-        break;
-    }
-
-    return Color.fromARGB(alpha, red, green, blue);
-  }
-
-  /// Alias of rgb().
-  static Color rgba(r, g, b, [a = 1.0]) => rgb(r, g, b, a);
-
-  /// TODO DOCS
-  static Color hsl(double hue, double saturation, double lightness,
-      [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) {
-    double h, s, l, a;
-
-    // Convert to degrees
-    switch (angleUnit) {
-      case AngleUnits.deg:
-        h = hue;
-        break;
-      case AngleUnits.grad:
-        h = hue * 180 / 200;
-        break;
-      case AngleUnits.rad:
-        h = hue * 180 / math.pi;
-        break;
-      case AngleUnits.turn:
-        h = hue * 360;
-        break;
-      default:
-        break;
-    }
-
-    h = h % 360; // [HSLColor.hue] range is [0.0, 360.0]
-    s = saturation.clamp(0.0, 1.0);
-    l = lightness.clamp(0.0, 1.0);
-    a = alpha.clamp(0.0, 1.0);
-
-    return HSLColor.fromAHSL(a, h, s, l).toColor();
-  }
-
-  /// Alias of hsl().
-  static Color hsla(double hue, double saturation, double lightness,
-          [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
-      hsl(hue, saturation, lightness, alpha, angleUnit);
-
-  static Color hwb(double hue, double whiteness, double blackness,
-      [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) {
-    var w = whiteness, b = blackness;
-    double h, s, v, a;
-
-    // Convert to degrees
-    switch (angleUnit) {
-      case AngleUnits.deg:
-        h = hue;
-        break;
-      case AngleUnits.grad:
-        h = hue * 180 / 200;
-        break;
-      case AngleUnits.rad:
-        h = hue * 180 / math.pi;
-        break;
-      case AngleUnits.turn:
-        h = hue * 360;
-        break;
-      default:
-        break;
-    }
-
-    // Normalize values to add up to 1.0
-    if (w + b > 1) {
-      var x = w + b;
-      w /= x;
-      b /= x;
-    }
-
-    // See [HWB color model](https://en.wikipedia.org/wiki/HWB_color_model)
-    h = h % 360; // [HSVColor.hue] range is [0.0, 360.0]
-    s = 1 - w / (1 - b);
-    v = 1 - b;
-    a = alpha.clamp(0.0, 1.0);
-
-    return HSVColor.fromAHSV(a, h, s, v).toColor();
-  }
-
-  /// Alias of hwb().
-  static Color hwba(double hue, double whiteness, double blackness,
-          [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
-      hwb(hue, whiteness, blackness, alpha, angleUnit);
-
-  static bool _isNamedColor(String value) => _namedColors.containsKey(value);
-
-  static bool _isAsciiHexDigit(int c) =>
-      (c >= 97 && c <= 102) || (c >= 65 && c <= 70) || (c >= 48 && c <= 57);
-
-  static Color _parseHexString(String value) {
-    int r, g, b, a;
-    var hexString = value.replaceFirst('#', '');
-
-    if ((hexString.length != 3 &&
-            hexString.length != 4 &&
-            hexString.length != 6 &&
-            hexString.length != 8) ||
-        !hexString.codeUnits.every(_isAsciiHexDigit)) {
-      throw FormatException('Could not parse hex color \'$value\'');
-    }
-
-    a = 255; // Suppose it's an opaque color. If not we change this below.
-
-    if (hexString.length >= 6) {
-      r = int.parse(hexString.substring(0, 2), radix: 16);
-      g = int.parse(hexString.substring(2, 4), radix: 16);
-      b = int.parse(hexString.substring(4, 6), radix: 16);
-      if (hexString.length == 8) {
-        a = int.parse(hexString.substring(6, 8), radix: 16);
-      }
-    } else {
-      r = int.parse(hexString.substring(0, 1) * 2, radix: 16);
-      g = int.parse(hexString.substring(1, 2) * 2, radix: 16);
-      b = int.parse(hexString.substring(2, 3) * 2, radix: 16);
-      if (hexString.length == 4) {
-        a = int.parse(hexString.substring(3, 4) * 2, radix: 16);
-      }
-    }
-
-    return Color.fromARGB(a, r, g, b);
-  }
-
   /// Generate a random fully opaque color.
   static Color random() {
     const hexMax = 256 * 256 * 256;
@@ -242,16 +114,60 @@ class Chroma extends Color {
     return ((r * 299) + (g * 587) + (b * 114)) / 1000 > 125 ? _black : _white;
   }
 
-  /// Returns a CSS string of a color.
-  ///
-// TODO implement
-/*
-  @override
-  // HEX, RGB, CMYK, HSV, HSL
-  String toString([{enum color space}]) {
-    return 'asd';
+  static String toHexString(Vector4 input,
+                            {bool alpha: false, bool short: false}) {
+
+
+    if (isShort) {
+      final var rgb = (r & 0xF).toRadixString(16) +
+          (g & 0xF).toRadixString(16) +
+          (b & 0xF).toRadixString(16);
+
+      return alpha ? (a & 0xF).toRadixString(16) + rgb : rgb;
+    } else {
+      final var rgb = r.toRadixString(16).padLeft(2, '0') +
+          g.toRadixString(16).padLeft(2, '0') +
+          b.toRadixString(16).padLeft(2, '0');
+
+      return alpha ? a.toRadixString(16).padLeft(2, '0') + rgb : rgb;
+    }
   }
-   */
+
+  @override
+  String toString() {
+    switch (_colorFormat) {
+      case _colorFormats.HEX:
+        // TODO: support short hex output whenever possible
+
+        final r = (red * 0xFF).floor() & 0xFF;
+        final g = (green * 0xFF).floor() & 0xFF;
+        final b = (blue * 0xFF).floor() & 0xFF;
+        final a = (alpha * 0xFF).floor() & 0xFF;
+
+        var output = r.toRadixString(16).padLeft(2, '0') +
+            g.toRadixString(16).padLeft(2, '0') +
+            b.toRadixString(16).padLeft(2, '0');
+
+        if (alpha != 0xFF) {
+          output += a.toRadixString(16).padLeft(2, '0');
+        }
+
+        return '#$output';
+      case _colorFormats.RGB:
+        return '$runtimeType($alpha, $alpha, $alpha, $value)';
+      case _colorFormats.HSL:
+        return 'Color(0x${value.toRadixString(16).padLeft(8, '0')})';
+      case _colorFormats.HSV:
+        return 'Color(0x${value.toRadixString(16).padLeft(8, '0')})';
+      case _colorFormats.HWB:
+        return 'Color(0x${value.toRadixString(16).padLeft(8, '0')})';
+      default:
+        return 'If you\'re seeing this, open an issue.';
+    }
+  }
 }
 
 enum AngleUnits { deg, grad, rad, turn }
+
+// TODO: support LCH, LAB, HCL, CMYK.
+enum _colorFormats { HEX, RGB, HSL, HSV, HWB }

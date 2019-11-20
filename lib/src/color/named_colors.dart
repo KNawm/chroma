@@ -1,4 +1,9 @@
-part of 'chroma_base.dart';
+import 'dart:ui' show Color;
+
+// ignore: public_member_api_docs
+int fromNamed(String value) {
+  return _namedColors.containsKey(value) ? _namedColors[value].value : null;
+}
 
 final _namedColors = const {
   'aliceblue': Color(0xFFF0F8FF),
@@ -149,4 +154,4 @@ final _namedColors = const {
   'whitesmoke': Color(0xFFF5F5F5),
   'yellow': Color(0xFFFFFF00),
   'yellowgreen': Color(0xFF9ACD32),
-}
+};

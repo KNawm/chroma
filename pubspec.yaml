@@ -9,10 +9,11 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  convert: ^2.1.1
   flutter:
     sdk: flutter
 
 dev_dependencies:
+  effective_dart: ^1.1.0
   flutter_test:
     sdk: flutter
-  effective_dart: ^1.1.0
