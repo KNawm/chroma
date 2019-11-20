@@ -6,7 +6,8 @@ import 'package:vector_math/vector_math.dart';
 import 'color/parser.dart' as parse;
 
 class Chroma extends Color {
-  _colorFormats _colorFormat;
+  final List<double> _components = List(4);
+  final _colorFormats _colorFormat;
 
   // ignore: public_member_api_docs
   Chroma(String color)
@@ -101,36 +102,32 @@ class Chroma extends Color {
   /// Generate a random fully opaque color.
   static Color random() {
     const hexMax = 256 * 256 * 256;
-    var color = (math.Random().nextDouble() * hexMax).floor();
+    final color = (math.Random().nextDouble() * hexMax).floor();
     return Color(color + 0xFF000000);
   }
 
   static Color contrastColor(Color color) {
-    var r = color.red;
-    var g = color.green;
-    var b = color.blue;
+    final r = color.red;
+    final g = color.green;
+    final b = color.blue;
 
     // See <https://www.w3.org/TR/AERT/#color-contrast>
     return ((r * 299) + (g * 587) + (b * 114)) / 1000 > 125 ? _black : _white;
   }
 
-  static String toHexString(Vector4 input,
-                            {bool alpha: false, bool short: false}) {
+  static Color toGrayscale(Color color) {
+    // TODO: research how to do this with Lab
 
+    // See <https://en.wikipedia.org/wiki/Luma_(video)>
+    final value = 0.2126 * (color.red / 0xFF) +
+        0.7152 * (color.green / 0xFF) +
+        0.0722 * (color.blue / 0xFF);
 
-    if (isShort) {
-      final var rgb = (r & 0xF).toRadixString(16) +
-          (g & 0xF).toRadixString(16) +
-          (b & 0xF).toRadixString(16);
+    /*final value = 0.299 * (color.red / 0xFF) +
+        0.587 * (color.green / 0xFF) +
+        0.114 * (color.blue / 0xFF);*/
 
-      return alpha ? (a & 0xF).toRadixString(16) + rgb : rgb;
-    } else {
-      final var rgb = r.toRadixString(16).padLeft(2, '0') +
-          g.toRadixString(16).padLeft(2, '0') +
-          b.toRadixString(16).padLeft(2, '0');
-
-      return alpha ? a.toRadixString(16).padLeft(2, '0') + rgb : rgb;
-    }
+    return Chroma.fromRGB(value, value, value, color.alpha)
   }
 
   @override
@@ -138,21 +135,15 @@ class Chroma extends Color {
     switch (_colorFormat) {
       case _colorFormats.HEX:
         // TODO: support short hex output whenever possible
-
-        final r = (red * 0xFF).floor() & 0xFF;
-        final g = (green * 0xFF).floor() & 0xFF;
-        final b = (blue * 0xFF).floor() & 0xFF;
-        final a = (alpha * 0xFF).floor() & 0xFF;
-
-        var output = r.toRadixString(16).padLeft(2, '0') +
-            g.toRadixString(16).padLeft(2, '0') +
-            b.toRadixString(16).padLeft(2, '0');
+        var hexString = red.toRadixString(16).padLeft(2, '0') +
+            green.toRadixString(16).padLeft(2, '0') +
+            blue.toRadixString(16).padLeft(2, '0');
 
         if (alpha != 0xFF) {
-          output += a.toRadixString(16).padLeft(2, '0');
+          hexString += alpha.toRadixString(16).padLeft(2, '0');
         }
 
-        return '#$output';
+        return '#$hexString';
       case _colorFormats.RGB:
         return '$runtimeType($alpha, $alpha, $alpha, $value)';
       case _colorFormats.HSL:

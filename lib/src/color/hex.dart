@@ -6,7 +6,7 @@ bool _isAsciiHexDigit(int c) =>
 // ignore: public_member_api_docs
 int fromHEX(String value) {
   int red, green, blue, alpha;
-  var hexString = value.replaceFirst('#', '');
+  final hexString = value.replaceFirst('#', '');
 
   if ((hexString.length != 3 &&
           hexString.length != 4 &&
