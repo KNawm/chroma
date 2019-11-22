@@ -31,15 +31,16 @@ int toColorValue(double red, double green, double blue, double alpha) {
   return (a << 24) | (r << 16) | (g << 8) | (b << 0);
 }
 
+// Convert angle to degree and normalize it in the range [0.0, 360.0)
 double convertToDegrees(double value, AngleUnits unit) {
   switch (unit) {
     case AngleUnits.grad:
-      return value * 180 / 200;
+      return (value * 180 / 200) % 360;
     case AngleUnits.rad:
-      return value * 180 / math.pi;
+      return (value * 180 / math.pi) % 360;
     case AngleUnits.turn:
-      return value * 360;
+      return (value * 360) % 360;
     default:
-      return value;
+      return value % 360;
   }
 }

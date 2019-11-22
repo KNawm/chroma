@@ -53,9 +53,6 @@ void main() {
       expect(Chroma.fromRGB(1.0, 0, 1.0).hashCode, colorFuchsia);
       expect(Chroma.fromRGB(255, 0, 1.0).hashCode, colorFuchsia);
 
-      // TODO FIX
-      //expect(Chroma.fromRGB(1e2, .5e1, .5e0, .25e2).hashCode, Color(0xFFFF0099));
-
       expect(Chroma.fromRGB(186, 170, 170, 0.666).hashCode, colorSheep);
       expect(Chroma.fromRGB(186, 0.666, 0.666, 0.666).hashCode, colorSheep);
       expect(Chroma.fromRGB((186 / 255), 170, 170, 170).hashCode, colorSheep);
@@ -63,7 +60,7 @@ void main() {
       expect(Chroma.fromRGB(254, 237, 186, 0.8).hashCode, colorFeedback);
       expect(Chroma.fromRGB(254, 237, 186, 204).hashCode, colorFeedback);
 
-      //todo write tests with out of range values
+      //todo write tests with out of range values and examples with scientific notation
     });
 
     test('HSL syntax', () {
@@ -82,7 +79,7 @@ void main() {
 
       expect(Chroma.fromHSL(45, 0.971, 0.863, 0.8).hashCode, colorFeedback);
 
-      //todo write tests with out of range values
+      //todo write tests with out of range values and examples with scientific notation
     });
 
     test('HSV syntax', () {
@@ -99,7 +96,7 @@ void main() {
 
       expect(Chroma.fromHSV(45, 0.268, 0.996, 0.8).hashCode, colorFeedback);
 
-      //todo write tests with out of range values
+      //todo write tests with out of range values and examples with scientific notation
     });
 
     test('HWB syntax', () {
@@ -116,7 +113,7 @@ void main() {
 
       expect(Chroma.fromHWB(45, 0.729, 0.004, 0.8).hashCode, colorFeedback);
 
-      //todo write tests with out of range values
+      //todo write tests with out of range values and examples with scientific notation
     });
   });
 

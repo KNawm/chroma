@@ -23,7 +23,6 @@ List fromHWB(double hue, double whiteness, double blackness,
   }
 
   // See [HWB color model](https://en.wikipedia.org/wiki/HWB_color_model)
-  hue %= 360; // [HSVColor.hue] range is [0.0, 360.0]
   saturation = 1 - whiteness / (1 - blackness);
   value = 1 - blackness;
 

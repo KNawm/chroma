@@ -13,8 +13,6 @@ List fromHSV(double hue, double saturation, double value,
   assert(alpha <= 1.0);
 
   hue = convertToDegrees(hue, angleUnit);
-  hue %= 360; // [HSVColor.hue] range is [0.0, 360.0]
-
   final out = List(2)
     ..[0] = HSVColor.fromAHSV(alpha, hue, saturation, value).toColor().value
     ..[1] = {
