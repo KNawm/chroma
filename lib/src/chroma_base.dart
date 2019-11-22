@@ -1,81 +1,48 @@
 import 'dart:math' as math;
 import 'dart:ui' show Color;
 
-import 'package:vector_math/vector_math.dart';
-
 import 'color/parser.dart' as parse;
 
 class Chroma extends Color {
-  final List<double> _components = List(4);
-  final _colorFormats _colorFormat;
+  final _ColorFormats _colorFormat;
+  final Map<String, double> _components;
 
-  // ignore: public_member_api_docs
-  Chroma(String color)
-      : assert(color.isNotEmpty),
-        _colorFormat = _colorFormats.HEX,
-        super(parse.fromString(color));
+  Chroma._(List color, _ColorFormats format)
+      : _colorFormat = format,
+        _components = color[1],
+        super(color[0]);
 
-  /// The rgb() function defines an sRGB color by specifying the red, green,
-  /// blue and alpha channels directly. TODO
+  factory Chroma(String value) {
+    assert(value.isNotEmpty);
+    return Chroma._(parse.fromString(value), _ColorFormats.HEX);
+  }
+
+  /// Creates a color by specifying red, green, blue and alpha as components.
   ///
-  /// Out of range values are clamped.
-  /// Representation of RGBA colors.
-  //
-  //This structure is used throughout Unity to pass colors around. Each color component is a floating point value with a range from 0 to 1.
-  //
-  //Components (r,g,b) define a color in RGB color space. Alpha component (a) defines transparency - alpha of one is completely opaque, alpha of zero is completely transparent.
-  // ignore: public_member_api_docs
-  Chroma.fromRGB(num red, num green, num blue, [num alpha = 1.0])
-      : assert(red.runtimeType == double
-            ? (red >= 0.0 && red <= 1.0)
-            : (red >= 0 && red <= 255)),
-        assert(green.runtimeType == double
-            ? (green >= 0.0 && green <= 1.0)
-            : (green >= 0 && green <= 255)),
-        assert(blue.runtimeType == double
-            ? (blue >= 0.0 && blue <= 1.0)
-            : (blue >= 0 && blue <= 255)),
-        assert(alpha.runtimeType == double
-            ? (alpha >= 0.0 && alpha <= 1.0)
-            : (alpha >= 0 && alpha <= 255)),
-        _colorFormat = _colorFormats.RGB,
-        super(parse.fromRGB(red, green, blue, alpha));
+  /// Each component is a double with a range from 0.0 to 1.0 or an integer with a range from 0 to 255.
+  /// You can mix integers and doubles as you please, using 255 is equivalent to using 1.0,
+  /// but be careful with the type of the number because you could end up with an
+  /// unexpected color because 1.0 is not the same as 1.
+  ///
+  /// TODO
+  /// An alpha value of 1.0 is completely opaque, and 0.0 is completely transparent.
+  factory Chroma.fromRGB(num red, num green, num blue, [num alpha = 1.0]) =>
+      Chroma._(parse.fromRGB(red, green, blue, alpha), _ColorFormats.RGB);
 
-  // ignore: public_member_api_docs
-  Chroma.fromHSL(double hue, double saturation, double lightness,
-      [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg])
-      : assert(saturation >= 0.0),
-        assert(saturation <= 1.0),
-        assert(lightness >= 0.0),
-        assert(lightness <= 1.0),
-        assert(alpha >= 0.0),
-        assert(alpha <= 1.0),
-        _colorFormat = _colorFormats.HSL,
-        super(parse.fromHSL(hue, saturation, lightness, alpha, angleUnit));
+  factory Chroma.fromHSL(double hue, double saturation, double lightness,
+          [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
+      Chroma._(parse.fromHSL(hue, saturation, lightness, alpha, angleUnit),
+          _ColorFormats.HSL);
 
-  // ignore: public_member_api_docs
-  Chroma.fromHSV(double hue, double saturation, double value,
-      [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg])
-      : assert(saturation >= 0.0),
-        assert(saturation <= 1.0),
-        assert(value >= 0.0),
-        assert(value <= 1.0),
-        assert(alpha >= 0.0),
-        assert(alpha <= 1.0),
-        _colorFormat = _colorFormats.HSV,
-        super(parse.fromHSV(hue, saturation, value, alpha, angleUnit));
+  factory Chroma.fromHSV(double hue, double saturation, double value,
+          [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
+      Chroma._(parse.fromHSV(hue, saturation, value, alpha, angleUnit),
+          _ColorFormats.HSV);
 
-  // ignore: public_member_api_docs
-  Chroma.fromHWB(double hue, double whiteness, double blackness,
-      [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg])
-      : assert(whiteness >= 0.0),
-        assert(whiteness <= 1.0),
-        assert(blackness >= 0.0),
-        assert(blackness <= 1.0),
-        assert(alpha >= 0.0),
-        assert(alpha <= 1.0),
-        _colorFormat = _colorFormats.HWB,
-        super(parse.fromHWB(hue, whiteness, blackness, alpha, angleUnit));
+  factory Chroma.fromHWB(double hue, double whiteness, double blackness,
+          [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
+      Chroma._(parse.fromHWB(hue, whiteness, blackness, alpha, angleUnit),
+          _ColorFormats.HSV);
 
   static const Color _black = Color(0xFF000000);
   static const Color _white = Color(0xFFFFFFFF);
@@ -98,6 +65,13 @@ class Chroma extends Color {
 
   /// Returns the blue channel of a color as an integer between 0 and 255.
   static int blue(Color color) => color.blue;*/
+
+  /// Returns the values of the components of the color, which components are
+  /// present depends on the specified components when the color was created.
+  ///
+  /// All values, except for the hue, are doubles between 0.0 and 1.0.
+  /// The hue is a double between 0.0 and 360.0.
+  Map<String, double> get components => _components;
 
   /// Generate a random fully opaque color.
   static Color random() {
@@ -123,17 +97,13 @@ class Chroma extends Color {
         0.7152 * (color.green / 0xFF) +
         0.0722 * (color.blue / 0xFF);
 
-    /*final value = 0.299 * (color.red / 0xFF) +
-        0.587 * (color.green / 0xFF) +
-        0.114 * (color.blue / 0xFF);*/
-
-    return Chroma.fromRGB(value, value, value, color.alpha)
+    return Chroma.fromRGB(value, value, value, color.alpha);
   }
 
   @override
   String toString() {
     switch (_colorFormat) {
-      case _colorFormats.HEX:
+      case _ColorFormats.HEX:
         // TODO: support short hex output whenever possible
         var hexString = red.toRadixString(16).padLeft(2, '0') +
             green.toRadixString(16).padLeft(2, '0') +
@@ -144,13 +114,13 @@ class Chroma extends Color {
         }
 
         return '#$hexString';
-      case _colorFormats.RGB:
+      case _ColorFormats.RGB:
         return '$runtimeType($alpha, $alpha, $alpha, $value)';
-      case _colorFormats.HSL:
+      case _ColorFormats.HSL:
         return 'Color(0x${value.toRadixString(16).padLeft(8, '0')})';
-      case _colorFormats.HSV:
+      case _ColorFormats.HSV:
         return 'Color(0x${value.toRadixString(16).padLeft(8, '0')})';
-      case _colorFormats.HWB:
+      case _ColorFormats.HWB:
         return 'Color(0x${value.toRadixString(16).padLeft(8, '0')})';
       default:
         return 'If you\'re seeing this, open an issue.';
@@ -158,7 +128,8 @@ class Chroma extends Color {
   }
 }
 
-enum AngleUnits { deg, grad, rad, turn }
-
 // TODO: support LCH, LAB, HCL, CMYK.
-enum _colorFormats { HEX, RGB, HSL, HSV, HWB }
+// ignore: constant_identifier_names
+enum _ColorFormats { HEX, RGB, HSL, HSV, HWB }
+
+enum AngleUnits { deg, grad, rad, turn }

@@ -30,3 +30,4 @@ linter:
     unrelated_type_equality_checks: true
     use_rethrow_when_possible: true
     valid_regexps: true
+    public_member_api_docs: false

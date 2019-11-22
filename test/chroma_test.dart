@@ -22,7 +22,7 @@ void main() {
       expect(() => Chroma('fuchsias'), throwsFormatException);
     });
 
-    test('Hexadecimal syntax', () {
+    test('Hash syntax', () {
       expect(Chroma('#FF00FF').hashCode, colorFuchsia);
       expect(Chroma('#F0F').hashCode, colorFuchsia);
       expect(Chroma('#FF00FFFF').hashCode, colorFuchsia);
@@ -67,8 +67,9 @@ void main() {
     });
 
     test('HSL syntax', () {
-      expect(Chroma.fromHSL(300, 1.0, 0.5, 1.0).hashCode, colorFuchsia);
-      expect(Chroma.fromHSL(660, 1.0, 0.5, 1.0).hashCode, colorFuchsia);
+      expect(Chroma.fromHSL(-60, 1.0, 0.5).hashCode, colorFuchsia);
+      expect(Chroma.fromHSL(300, 1.0, 0.5).hashCode, colorFuchsia);
+      expect(Chroma.fromHSL(660, 1.0, 0.5).hashCode, colorFuchsia);
       expect(
           Chroma.fromHSL(300 * 200 / 180, 1, .5, 1, AngleUnits.grad).hashCode,
           colorFuchsia);
@@ -80,6 +81,23 @@ void main() {
       expect(Chroma.fromHSL(0, 0.104, 0.698, 0.666).hashCode, colorSheep);
 
       expect(Chroma.fromHSL(45, 0.971, 0.863, 0.8).hashCode, colorFeedback);
+
+      //todo write tests with out of range values
+    });
+
+    test('HSV syntax', () {
+      expect(Chroma.fromHSV(300, 1.0, 1.0).hashCode, colorFuchsia);
+      expect(Chroma.fromHSV(660, 1.0, 1.0).hashCode, colorFuchsia);
+      expect(Chroma.fromHSV(300 * 200 / 180, 1, 1, 1, AngleUnits.grad).hashCode,
+          colorFuchsia);
+      expect(Chroma.fromHSV(300 * pi / 180, 1, 1, 1, AngleUnits.rad).hashCode,
+          colorFuchsia);
+      expect(Chroma.fromHSV(300 / 360, 1.0, 1, 1, AngleUnits.turn).hashCode,
+          colorFuchsia);
+
+      expect(Chroma.fromHSV(0, 0.086, 0.729, 0.666).hashCode, colorSheep);
+
+      expect(Chroma.fromHSV(45, 0.268, 0.996, 0.8).hashCode, colorFeedback);
 
       //todo write tests with out of range values
     });
@@ -100,5 +118,23 @@ void main() {
 
       //todo write tests with out of range values
     });
+  });
+
+  group('Color base', () {
+    final colorHEX = Chroma('baaaaaaa');
+    final colorRGB = Chroma.fromRGB(186, 0.666, 170, 0.666);
+    final colorHSL = Chroma.fromHSL(45, 0.971, 0.863, 0.8);
+    final colorHSV = Chroma.fromHSV(0, 0.086, 0.729, 0.666);
+    final colorHWB = Chroma.fromHWB(45, 0.729, 0.004, 0.8);
+
+    print(colorHEX.components);
+    print(colorRGB.components);
+    print(colorHSL.components);
+    print(colorHSV.components);
+    print(colorHWB.components);
+
+    /*test('Components', () {
+      expect(color1.components, 'asd');
+    });*/
   });
 }

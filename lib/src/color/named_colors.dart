@@ -1,8 +1,26 @@
 import 'dart:ui' show Color;
 
-// ignore: public_member_api_docs
-int fromNamed(String value) {
-  return _namedColors.containsKey(value) ? _namedColors[value].value : null;
+import 'utils.dart' show bound;
+
+List fromNamed(String value) {
+  if (_namedColors.containsKey(value)) {
+    final red = bound(_namedColors[value].red);
+    final green = bound(_namedColors[value].green);
+    final blue = bound(_namedColors[value].blue);
+
+    final out = List(2)
+      ..[0] = _namedColors[value].value
+      ..[1] = {
+        'r': red,
+        'g': green,
+        'b': blue,
+        'a': 1.0,
+      };
+
+    return out;
+  }
+
+  return null;
 }
 
 final _namedColors = const {
