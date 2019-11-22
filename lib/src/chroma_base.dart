@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui' show Color;
 
 import 'color/parser.dart' as parse;
+import 'color/utils.dart' as utils show checkFractional, toPercentage;
 
 class Chroma extends Color {
   final _ColorFormats _colorFormat;
@@ -42,7 +43,7 @@ class Chroma extends Color {
   factory Chroma.fromHWB(double hue, double whiteness, double blackness,
           [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
       Chroma._(parse.fromHWB(hue, whiteness, blackness, alpha, angleUnit),
-          _ColorFormats.HSV);
+          _ColorFormats.HWB);
 
   static const Color _black = Color(0xFF000000);
   static const Color _white = Color(0xFFFFFFFF);
@@ -74,13 +75,13 @@ class Chroma extends Color {
   Map<String, double> get components => _components;
 
   /// Generate a random fully opaque color.
-  static Color random() {
+  static Chroma random() {
     const hexMax = 256 * 256 * 256;
-    final color = (math.Random().nextDouble() * hexMax).floor();
-    return Color(color + 0xFF000000);
+    final color = (math.Random().nextDouble() * hexMax).floor().toString();
+    return Chroma(color);
   }
 
-  static Color contrastColor(Color color) {
+  static Chroma contrastColor(Chroma color) {
     final r = color.red;
     final g = color.green;
     final b = color.blue;
@@ -89,7 +90,7 @@ class Chroma extends Color {
     return ((r * 299) + (g * 587) + (b * 114)) / 1000 > 125 ? _black : _white;
   }
 
-  static Color toGrayscale(Color color) {
+  static Chroma toGrayscale(Chroma color) {
     // TODO: research how to do this with Lab
 
     // See <https://en.wikipedia.org/wiki/Luma_(video)>
@@ -115,13 +116,32 @@ class Chroma extends Color {
 
         return '#$hexString';
       case _ColorFormats.RGB:
-        return '$runtimeType($alpha, $alpha, $alpha, $value)';
+        final a = components.values.elementAt(3);
+
+        return alpha != 0xFF
+            ? 'rgba($red, $green, $blue, $a)'
+            : 'rgb($red, $green, $blue)';
       case _ColorFormats.HSL:
-        return 'Color(0x${value.toRadixString(16).padLeft(8, '0')})';
+        final h = utils.checkFractional(components.values.elementAt(0));
+        final s = utils.toPercentage(components.values.elementAt(1));
+        final l = utils.toPercentage(components.values.elementAt(2));
+        final a = components.values.elementAt(3);
+
+        return alpha != 0xFF ? 'hsla($h, $s%, $l%, $a)' : 'hsl($h, $s%, $l%)';
       case _ColorFormats.HSV:
-        return 'Color(0x${value.toRadixString(16).padLeft(8, '0')})';
+        final h = utils.checkFractional(components.values.elementAt(0));
+        final s = utils.toPercentage(components.values.elementAt(1));
+        final v = utils.toPercentage(components.values.elementAt(2));
+        final a = components.values.elementAt(3);
+
+        return alpha != 0xFF ? 'hsv($h, $s%, $v%, $a)' : 'hsv($h, $s%, $v%)';
       case _ColorFormats.HWB:
-        return 'Color(0x${value.toRadixString(16).padLeft(8, '0')})';
+        final h = utils.checkFractional(components.values.elementAt(0));
+        final w = utils.toPercentage(components.values.elementAt(1));
+        final b = utils.toPercentage(components.values.elementAt(2));
+        final a = components.values.elementAt(3);
+
+        return alpha != 0xFF ? 'hwb($h, $w%, $b%, $a)' : 'hwb($h, $w%, $b%)';
       default:
         return 'If you\'re seeing this, open an issue.';
     }

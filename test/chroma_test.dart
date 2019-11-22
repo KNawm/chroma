@@ -121,20 +121,24 @@ void main() {
   });
 
   group('Color base', () {
-    final colorHEX = Chroma('baaaaaaa');
-    final colorRGB = Chroma.fromRGB(186, 0.666, 170, 0.666);
-    final colorHSL = Chroma.fromHSL(45, 0.971, 0.863, 0.8);
-    final colorHSV = Chroma.fromHSV(0, 0.086, 0.729, 0.666);
-    final colorHWB = Chroma.fromHWB(45, 0.729, 0.004, 0.8);
+    final colorHEX = Chroma('fuchsia');
+    final colorRGB = Chroma.fromRGB(255, 0, 255);
+    final colorHSL = Chroma.fromHSL(300, 1, .5);
+    final colorHSV = Chroma.fromHSV(300, 1, 1);
+    final colorHWB = Chroma.fromHWB(300, 0, 0);
 
-    print(colorHEX.components);
-    print(colorRGB.components);
-    print(colorHSL.components);
-    print(colorHSV.components);
-    print(colorHWB.components);
+    test('Components', () {
+      expect(colorHEX.components, {'r': 1, 'g': 0, 'b': 1, 'a': 1});
+      expect(colorRGB.components, {'r': 1, 'g': 0, 'b': 1, 'a': 1});
+      expect(colorHSL.components, {'h': 300, 's': 1, 'l': .5, 'a': 1});
+      expect(colorHSV.components, {'h': 300, 's': 1, 'v': 1, 'a': 1});
+      expect(colorHWB.components, {'h': 300, 'w': 0, 'b': 0, 'a': 1});
 
-    /*test('Components', () {
-      expect(color1.components, 'asd');
-    });*/
+      expect(colorHEX.toString(), '#ff00ff');
+      expect(colorRGB.toString(), 'rgb(255, 0, 255)');
+      expect(colorHSL.toString(), 'hsl(300, 100%, 50%)');
+      expect(colorHSV.toString(), 'hsv(300, 100%, 100%)');
+      expect(colorHWB.toString(), 'hwb(300, 0%, 0%)');
+    });
   });
 }
