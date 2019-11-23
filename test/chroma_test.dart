@@ -117,7 +117,7 @@ void main() {
     });
   });
 
-  group('Color base', () {
+  group('Colors', () {
     final colorHEX = Chroma('fuchsia');
     final colorRGB = Chroma.fromRGB(255, 0, 255);
     final colorHSL = Chroma.fromHSL(300, 1, .5);
@@ -136,6 +136,13 @@ void main() {
       expect(colorHSL.toString(), 'hsl(300, 100%, 50%)');
       expect(colorHSV.toString(), 'hsv(300, 100%, 100%)');
       expect(colorHWB.toString(), 'hwb(300, 0%, 0%)');
+    });
+
+    test('Grayscale', () {
+      expect(Chroma('black').toGrayscale(), Chroma.fromRGB(0, 0, 0));
+      expect(Chroma('white').toGrayscale(), Chroma.fromRGB(255, 255, 255));
+      expect(Chroma('red').toGrayscale(), Chroma.fromRGB(127, 127, 127));
+      expect(colorHEX.toGrayscale(), Chroma.fromRGB(145, 145, 145));
     });
   });
 }

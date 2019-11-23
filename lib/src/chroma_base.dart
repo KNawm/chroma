@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+import 'dart:math' as math show pow, Random;
 import 'dart:ui' show Color;
 
 import 'color/parser.dart' as parse;
@@ -67,7 +67,7 @@ class Chroma extends Color {
   /// Returns the blue channel of a color as an integer between 0 and 255.
   static int blue(Color color) => color.blue;*/
 
-  /// Returns the values of the components of the color, which components are
+  /// Returns the values of the 4 components of the color, which components are
   /// present depends on the specified components when the color was created.
   ///
   /// All values, except for the hue, are doubles between 0.0 and 1.0.
@@ -90,15 +90,19 @@ class Chroma extends Color {
     return ((r * 299) + (g * 587) + (b * 114)) / 1000 > 125 ? _black : _white;
   }
 
-  static Chroma toGrayscale(Chroma color) {
-    // TODO: research how to do this with Lab
+  Chroma toGrayscale() {
+    // See <https://en.wikipedia.org/wiki/Grayscale>
+    final linear = 0.2126 * (red / 0xFF) +
+        0.7152 * (green / 0xFF) +
+        0.0722 * (blue / 0xFF);
 
-    // See <https://en.wikipedia.org/wiki/Luma_(video)>
-    final value = 0.2126 * (color.red / 0xFF) +
-        0.7152 * (color.green / 0xFF) +
-        0.0722 * (color.blue / 0xFF);
+    // Gamma correction
+    final srgb = linear > 0.0031308
+        ? 1.055 * math.pow(linear, 1 / 2.4) - 0.055
+        : 12.92 * linear;
 
-    return Chroma.fromRGB(value, value, value, color.alpha);
+    // TODO: maybe don't explicitly change the color model
+    return Chroma.fromRGB(srgb, srgb, srgb, alpha);
   }
 
   @override
