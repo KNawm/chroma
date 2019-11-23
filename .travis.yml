@@ -13,7 +13,7 @@ install:
   - export PATH="$PATH:`pwd`/flutter/bin"
   - flutter doctor -v
   - flutter packages get
-script: flutter test --coverage test/unit_test.dart
+script: flutter test --coverage
 after_script: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info
 
 cache:
