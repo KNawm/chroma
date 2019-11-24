@@ -77,7 +77,10 @@ class Chroma extends Color {
   /// Generate a random fully opaque color.
   static Chroma random() {
     const hexMax = 256 * 256 * 256;
-    final color = (math.Random().nextDouble() * hexMax).floor().toString();
+    final color = (math.Random().nextDouble() * hexMax)
+        .floor()
+        .toRadixString(16)
+        .padLeft(6, '0');
     return Chroma(color);
   }
 

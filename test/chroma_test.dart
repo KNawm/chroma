@@ -108,10 +108,9 @@ void main() {
           colorFuchsia);
       expect(Chroma.fromHWB(300 / 360, 0, 0, 1, AngleUnits.turn).hashCode,
           colorFuchsia);
-
       expect(Chroma.fromHWB(0, 0.665, 0.27, 0.666).hashCode, colorSheep);
-
       expect(Chroma.fromHWB(45, 0.729, 0.004, 0.8).hashCode, colorFeedback);
+      expect(Chroma.fromHWB(0, .8, .8).hashCode, Color(0xFF808080).hashCode);
 
       //todo write tests with out of range values and examples with scientific notation
     });
@@ -143,6 +142,10 @@ void main() {
       expect(Chroma('white').toGrayscale(), Chroma.fromRGB(255, 255, 255));
       expect(Chroma('red').toGrayscale(), Chroma.fromRGB(127, 127, 127));
       expect(colorHEX.toGrayscale(), Chroma.fromRGB(145, 145, 145));
+    });
+
+    test('Random', () {
+      expect(Chroma.random(), isA<Chroma>());
     });
   });
 }
