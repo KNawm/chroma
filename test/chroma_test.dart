@@ -135,6 +135,9 @@ void main() {
       expect(colorHSL.toString(), 'hsl(300, 100%, 50%)');
       expect(colorHSV.toString(), 'hsv(300, 100%, 100%)');
       expect(colorHWB.toString(), 'hwb(300, 0%, 0%)');
+
+      expect(Chroma('ccccccc5').toString(), '#ccccccc5');
+      expect(Chroma.fromRGB(0, 0, 255, .5).toString(), 'rgba(0, 0, 255, 0.5)');
     });
 
     test('Grayscale', () {
