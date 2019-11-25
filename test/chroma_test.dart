@@ -123,6 +123,14 @@ void main() {
     final colorHSV = Chroma.fromHSV(300, 1, 1);
     final colorHWB = Chroma.fromHWB(300, 0, 0);
 
+    test('Format', () {
+      expect(colorHEX.format, equals('hex'));
+      expect(colorRGB.format, equals('rgb'));
+      expect(colorHSL.format, equals('hsl'));
+      expect(colorHSV.format, equals('hsv'));
+      expect(colorHWB.format, equals('hwb'));
+    });
+
     test('Components', () {
       expect(colorHEX.components, {'r': 1, 'g': 0, 'b': 1, 'a': 1});
       expect(colorRGB.components, {'r': 1, 'g': 0, 'b': 1, 'a': 1});
@@ -145,6 +153,28 @@ void main() {
       expect(Chroma('white').toGrayscale(), Chroma.fromRGB(255, 255, 255));
       expect(Chroma('red').toGrayscale(), Chroma.fromRGB(127, 127, 127));
       expect(colorHEX.toGrayscale(), Chroma.fromRGB(145, 145, 145));
+    });
+
+    test('Equality', () {
+      expect(Chroma('black'), equals(Chroma.fromRGB(0, 0, 0)));
+      expect(Chroma('black'), equals(Chroma.fromHSL(0, 0, 0)));
+      expect(Chroma('black'), isNot(Chroma.fromHSL(0, 0, 0, 0)));
+      expect(Chroma('white'), isNot(Chroma.fromRGB(0, 0, 0)));
+      expect(Chroma('white'), isNot(Chroma.fromHSL(0, 0, 0)));
+    });
+  });
+
+  group('Chroma functions', () {
+    final black = Chroma('black');
+    final white = Chroma('white');
+    final fuchsia = Chroma('fuchsia');
+
+    test('Contrast ratio', () {
+      expect(Chroma.contrast(white, black), equals(21));
+      expect(Chroma.contrast(black, white), equals(21));
+      expect(Chroma.contrast(white, fuchsia), equals(3.14));
+      expect(Chroma.contrast(black, fuchsia), equals(6.7));
+      expect(Chroma.contrast(white, white), equals(1));
     });
 
     test('Random', () {

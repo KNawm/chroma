@@ -74,25 +74,6 @@ class Chroma extends Color {
   /// The hue is a double between 0.0 and 360.0.
   Map<String, double> get components => _components;
 
-  /// Generate a random fully opaque color.
-  static Chroma random() {
-    const hexMax = 256 * 256 * 256;
-    final color = (math.Random().nextDouble() * hexMax)
-        .floor()
-        .toRadixString(16)
-        .padLeft(6, '0');
-    return Chroma(color);
-  }
-
-  static Chroma contrastColor(Chroma color) {
-    final r = color.red;
-    final g = color.green;
-    final b = color.blue;
-
-    // See <https://www.w3.org/TR/AERT/#color-contrast>
-    return ((r * 299) + (g * 587) + (b * 114)) / 1000 > 125 ? _black : _white;
-  }
-
   Chroma toGrayscale() {
     // See <https://en.wikipedia.org/wiki/Grayscale>
     final linear = 0.2126 * (red / 0xFF) +
@@ -106,6 +87,95 @@ class Chroma extends Color {
 
     // TODO: maybe don't explicitly change the color model
     return Chroma.fromRGB(srgb, srgb, srgb, alpha);
+  }
+
+  /*/// Returns a new color that matches this color with the red channel replaced
+  /// with the given value.
+  @override
+  Chroma withRed(num value) {
+    return Color.fromARGB(alpha, r, green, blue);
+  }
+
+  /// Returns a new color that matches this color with the green channel replaced
+  /// with the given value.
+  @override
+  Chroma withGreen(num value) {
+    return Color.fromARGB(alpha, red, g, blue);
+  }
+
+  /// Returns a new color that matches this color with the blue channel replaced
+  /// with the given value.
+  @override
+  Chroma withBlue(num value) {
+    return Color.fromARGB(alpha, red, green, b);
+  }
+
+  /// Returns a new color that matches this color with the alpha channel replaced
+  /// with the given value.
+  @override
+  Chroma withAlpha(num value) {
+    return Color.fromARGB(a, red, green, blue);
+  }
+
+  /// Returns a new color that matches this color with the blue channel replaced
+  /// with the given value.
+  @override
+  Chroma withOpacity(double value) {
+    assert(opacity >= 0.0 && opacity <= 1.0);
+    return withAlpha((255.0 * opacity).round());
+  }*/
+
+  /// Returns a new color that matches this color with the component replaced
+  /// with the given value.
+  Chroma withValue(String component, double value) {
+    // TODO: implement
+  }
+
+  String get format {
+    switch (_colorFormat) {
+      case _ColorFormats.HEX:
+        return 'hex';
+      case _ColorFormats.RGB:
+        return 'rgb';
+      case _ColorFormats.HSL:
+        return 'hsl';
+      case _ColorFormats.HSV:
+        return 'hsv';
+      case _ColorFormats.HWB:
+        return 'hwb';
+      default:
+        return 'If you\'re seeing this, open an issue.';
+    }
+  }
+
+  /// Returns a random fully opaque color.
+  static Chroma random() {
+    const hexMax = 256 * 256 * 256;
+    final color = (math.Random().nextDouble() * hexMax)
+        .floor()
+        .toRadixString(16)
+        .padLeft(6, '0');
+    return Chroma(color);
+  }
+
+  /// Returns the contrast ratio between 2 colors as a double, based on the WCAG 2.1 Standard
+  /// Contrast ratios can range from 1.0 to 21.0
+  static double contrast(Chroma foreground, Chroma background) {
+    double lighter, darker;
+    final luminanceFg = foreground.computeLuminance();
+    final luminanceBg = background.computeLuminance();
+
+    if (luminanceBg > luminanceFg) {
+      lighter = luminanceBg;
+      darker = luminanceFg;
+    } else {
+      lighter = luminanceFg;
+      darker = luminanceBg;
+    }
+
+    // See <https://www.w3.org/TR/WCAG21/#dfn-contrast-ratio>
+    return double.parse(
+        ((lighter + 0.05) / (darker + 0.05)).toStringAsFixed(2));
   }
 
   @override
