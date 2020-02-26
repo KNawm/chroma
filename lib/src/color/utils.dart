@@ -21,11 +21,10 @@ num checkFractional(double n) {
 num toPercentage(double n) => checkFractional(n * 100);
 
 // Returns a 32 bit value representing a color with the specified components.
-// Parameters range is [0.0, 1.0]
 int toColorValue(double red, double green, double blue, double alpha) {
-  final r = (red * 0xFF).round();
-  final g = (green * 0xFF).round();
-  final b = (blue * 0xFF).round();
+  final r = red.round();
+  final g = green.round();
+  final b = blue.round();
   final a = (alpha * 0xFF).round();
 
   return (a << 24) | (r << 16) | (g << 8) | (b << 0);

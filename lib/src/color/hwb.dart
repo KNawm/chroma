@@ -22,7 +22,7 @@ List fromHWB(double hue, double whiteness, double blackness,
     blackness /= sum;
   }
 
-  // See [HWB color model](https://en.wikipedia.org/wiki/HWB_color_model)
+  // See <https://en.wikipedia.org/wiki/HWB_color_model>
   saturation = 1 - whiteness / (1 - blackness);
   value = 1 - blackness;
 

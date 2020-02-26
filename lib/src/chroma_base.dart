@@ -13,6 +13,15 @@ class Chroma extends Color {
         _components = color[1],
         super(color[0]);
 
+  /// Creates a color by specifying red, green, blue and alpha as components.
+  ///
+  /// Each component is a double with a range from 0.0 to 1.0 or an integer with a range from 0 to 255.
+  /// You can mix integers and doubles as you please, using 255 is equivalent to using 1.0,
+  /// but be careful with the type of the number because you could end up with an
+  /// unexpected color because 1.0 is not the same as 1.
+  ///
+  /// TODO
+  /// An alpha value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma(String value) {
     assert(value.isNotEmpty);
     return Chroma._(parse.fromString(value), _ColorFormats.HEX);
@@ -27,7 +36,7 @@ class Chroma extends Color {
   ///
   /// TODO
   /// An alpha value of 1.0 is completely opaque, and 0.0 is completely transparent.
-  factory Chroma.fromRGB(num red, num green, num blue, [num alpha = 1.0]) =>
+  factory Chroma.fromRGB(double red, double green, double blue, [double alpha = 1.0]) =>
       Chroma._(parse.fromRGB(red, green, blue, alpha), _ColorFormats.RGB);
 
   factory Chroma.fromHSL(double hue, double saturation, double lightness,
@@ -48,27 +57,8 @@ class Chroma extends Color {
   static const Color _black = Color(0xFF000000);
   static const Color _white = Color(0xFFFFFFFF);
 
-  /*/// Returns the alpha channel of a color as an integer between 0 and 255.
-  ///
-  /// A value of 0 is fully transparent, and 255 is fully opaque.
-  static int alpha(Color color) => color.alpha;
-
-  /// Returns the alpha channel of a color as a double between 0 and 1.
-  ///
-  /// A value of 0.0 is fully transparent, and 1.0 is fully opaque.
-  static double opacity(Color color) => color.opacity;
-
-  /// Returns the red channel of a color as an integer between 0 and 255.
-  static int red(Color color) => color.red;
-
-  /// Returns the green channel of a color as an integer between 0 and 255.
-  static int green(Color color) => color.green;
-
-  /// Returns the blue channel of a color as an integer between 0 and 255.
-  static int blue(Color color) => color.blue;*/
-
   /// Returns the values of the 4 components of the color, which components are
-  /// present depends on the specified components when the color was created.
+  /// present depends on the color model.
   ///
   /// All values, except for the hue, are doubles between 0.0 and 1.0.
   /// The hue is a double between 0.0 and 360.0.
@@ -82,11 +72,11 @@ class Chroma extends Color {
 
     // Gamma correction
     final srgb = linear > 0.0031308
-        ? 1.055 * math.pow(linear, 1 / 2.4) - 0.055
-        : 12.92 * linear;
+        ? (1.055 * math.pow(linear, 1 / 2.4) - 0.055) * 0xFF
+        : 12.92 * linear * 0xFF;
 
     // TODO: maybe don't explicitly change the color model
-    return Chroma.fromRGB(srgb, srgb, srgb, alpha);
+    return Chroma.fromRGB(srgb, srgb, srgb, opacity);
   }
 
   /*/// Returns a new color that matches this color with the red channel replaced
@@ -127,8 +117,91 @@ class Chroma extends Color {
 
   /// Returns a new color that matches this color with the component replaced
   /// with the given value.
+  ///
+  /// All values, except for the hue, are doubles between 0.0 and 1.0
+  /// The hue is a double between 0.0 and 360.0 TODO
   Chroma withValue(String component, double value) {
-    // TODO: implement
+    final c = List.from(components.values);
+
+    switch (_colorFormat) {
+      case _ColorFormats.HEX:
+        if (component == 'r' || component == 'R' || component == 'red' || component == 'RED') {
+          return Chroma.fromRGB(value, c[1], c[2], c[3]);
+        }
+        else if (component == 'g' || component == 'G' || component == 'green' || component == 'GREEN') {
+          return Chroma.fromRGB(c[0], value, c[2], c[3]);
+        }
+        else if (component == 'b' || component == 'B' || component == 'blue' || component == 'BLUE') {
+          return Chroma.fromRGB(c[0], c[1], value, c[3]);
+        }
+        else if (component == 'a' || component == 'A' || component == 'alpha' || component == 'ALPHA') {
+          return Chroma.fromRGB(c[0], c[1], c[2], value);
+        }
+        return null;
+
+      case _ColorFormats.RGB:
+        if (component == 'r' || component == 'R' || component == 'red' || component == 'RED') {
+          return Chroma.fromRGB(value, c[1], c[2], c[3]);
+        }
+        else if (component == 'g' || component == 'G' || component == 'green' || component == 'GREEN') {
+          return Chroma.fromRGB(c[0], value, c[2], c[3]);
+        }
+        else if (component == 'b' || component == 'B' || component == 'blue' || component == 'BLUE') {
+          return Chroma.fromRGB(c[0], c[1], value, c[3]);
+        }
+        else if (component == 'a' || component == 'A' || component == 'alpha' || component == 'ALPHA') {
+          return Chroma.fromRGB(c[0], c[1], c[2], value);
+        }
+        return null;
+
+      case _ColorFormats.HSL:
+        if (component == 'h' || component == 'H' || component == 'hue' || component == 'HUE') {
+          return Chroma.fromHSL(value, c[1], c[2], c[3]);
+        }
+        else if (component == 's' || component == 'S' || component == 'saturation' || component == 'SATURATION') {
+          return Chroma.fromHSL(c[0], value, c[2], c[3]);
+        }
+        else if (component == 'l' || component == 'L' || component == 'lightness' || component == 'LIGHTNESS') {
+          return Chroma.fromHSL(c[0], c[1], value, c[3]);
+        }
+        else if (component == 'a' || component == 'A' || component == 'alpha' || component == 'ALPHA') {
+          return Chroma.fromHSL(c[0], c[1], c[2], value);
+        }
+        return null;
+
+      case _ColorFormats.HSV:
+        if (component == 'h' || component == 'H' || component == 'hue' || component == 'HUE') {
+          return Chroma.fromHSV(value, c[1], c[2], c[3]);
+        }
+        else if (component == 's' || component == 'S' || component == 'saturation' || component == 'SATURATION') {
+          return Chroma.fromHSV(c[0], value, c[2], c[3]);
+        }
+        else if (component == 'v' || component == 'V' || component == 'value' || component == 'VALUE') {
+          return Chroma.fromHSV(c[0], c[1], value, c[3]);
+        }
+        else if (component == 'a' || component == 'A' || component == 'alpha' || component == 'ALPHA') {
+          return Chroma.fromHSV(c[0], c[1], c[2], value);
+        }
+        return null;
+
+      case _ColorFormats.HWB:
+        if (component == 'h' || component == 'H' || component == 'hue' || component == 'HUE') {
+          return Chroma.fromHWB(value, c[1], c[2], c[3]);
+        }
+        else if (component == 's' || component == 'S' || component == 'whiteness' || component == 'WHITENESS') {
+          return Chroma.fromHWB(c[0], value, c[2], c[3]);
+        }
+        else if (component == 'v' || component == 'V' || component == 'blackness' || component == 'BLACKNESS') {
+          return Chroma.fromHWB(c[0], c[1], value, c[3]);
+        }
+        else if (component == 'a' || component == 'A' || component == 'alpha' || component == 'ALPHA') {
+          return Chroma.fromHWB(c[0], c[1], c[2], value);
+        }
+        return null;
+
+      default:
+        return null;
+    }
   }
 
   String get format {
@@ -158,8 +231,8 @@ class Chroma extends Color {
     return Chroma(color);
   }
 
-  /// Returns the contrast ratio between 2 colors as a double, based on the WCAG 2.1 Standard
-  /// Contrast ratios can range from 1.0 to 21.0
+  /// Returns the contrast ratio between 2 colors based on the WCAG 2.1 Standard
+  /// as a double with a range from 1.0 to 21.0
   static double contrast(Chroma foreground, Chroma background) {
     double lighter, darker;
     final luminanceFg = foreground.computeLuminance();
@@ -178,6 +251,10 @@ class Chroma extends Color {
         ((lighter + 0.05) / (darker + 0.05)).toStringAsFixed(2));
   }
 
+  static double difference() {
+    // TODO: <https://en.wikipedia.org/wiki/color_difference>
+  }
+
   @override
   String toString() {
     switch (_colorFormat) {
@@ -194,31 +271,31 @@ class Chroma extends Color {
         return '#$hexString';
       case _ColorFormats.RGB:
         final a = components.values.elementAt(3);
-
         return alpha != 0xFF
             ? 'rgba($red, $green, $blue, $a)'
             : 'rgb($red, $green, $blue)';
+
       case _ColorFormats.HSL:
         final h = utils.checkFractional(components.values.elementAt(0));
         final s = utils.toPercentage(components.values.elementAt(1));
         final l = utils.toPercentage(components.values.elementAt(2));
         final a = components.values.elementAt(3);
-
         return alpha != 0xFF ? 'hsla($h, $s%, $l%, $a)' : 'hsl($h, $s%, $l%)';
+
       case _ColorFormats.HSV:
         final h = utils.checkFractional(components.values.elementAt(0));
         final s = utils.toPercentage(components.values.elementAt(1));
         final v = utils.toPercentage(components.values.elementAt(2));
         final a = components.values.elementAt(3);
-
         return alpha != 0xFF ? 'hsv($h, $s%, $v%, $a)' : 'hsv($h, $s%, $v%)';
+
       case _ColorFormats.HWB:
         final h = utils.checkFractional(components.values.elementAt(0));
         final w = utils.toPercentage(components.values.elementAt(1));
         final b = utils.toPercentage(components.values.elementAt(2));
         final a = components.values.elementAt(3);
-
         return alpha != 0xFF ? 'hwb($h, $w%, $b%, $a)' : 'hwb($h, $w%, $b%)';
+
       default:
         return 'If you\'re seeing this, open an issue.';
     }

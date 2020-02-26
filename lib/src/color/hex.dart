@@ -33,9 +33,6 @@ List fromHEX(String value) {
     }
   }
 
-  red = bound(red);
-  green = bound(green);
-  blue = bound(blue);
   alpha = bound(alpha);
 
   final out = List(2)

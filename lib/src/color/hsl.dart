@@ -13,6 +13,7 @@ List fromHSL(double hue, double saturation, double lightness,
   assert(alpha <= 1.0);
 
   hue = convertToDegrees(hue, angleUnit);
+
   final out = List(2)
     ..[0] = HSLColor.fromAHSL(alpha, hue, saturation, lightness).toColor().value
     ..[1] = {

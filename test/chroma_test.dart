@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:chroma/chroma.dart';
 
 void main() {
-  // #f0f      / fromRGB(255, 0, 255)          / fromHSL(300, 100%, 50%)
+  // #f0f      / rgb(255, 0, 255)          / hsl(300, 100%, 50%)
   final colorFuchsia = Color(0xFFFF00FF).hashCode;
-  // #baaaaaaa / fromRGB(186, 170, 170, 0.666) / fromHSL(0, 10.4%, 69.8%, 0.666)
+  // #baaaaaaa / rgb(186, 170, 170, 0.666) / hsl(0, 10.4%, 69.8%, 0.666)
   final colorSheep = Color(0xAABAAAAA).hashCode;
-  // #feedbacc / fromRGB(254, 237, 186, 0.8)   / fromHSL(45, 97.1%, 86.3%, 0.8)
+  // #feedbacc / rgb(254, 237, 186, 0.8)   / hsl(45, 97.1%, 86.3%, 0.8)
   final colorFeedback = Color(0xCCFEEDBA).hashCode;
 
   group('Syntax parsing', () {
@@ -50,17 +50,10 @@ void main() {
 
     test('RGB syntax', () {
       expect(Chroma.fromRGB(255, 0, 255).hashCode, colorFuchsia);
-      expect(Chroma.fromRGB(1.0, 0, 1.0).hashCode, colorFuchsia);
-      expect(Chroma.fromRGB(255, 0, 1.0).hashCode, colorFuchsia);
-
       expect(Chroma.fromRGB(186, 170, 170, 0.666).hashCode, colorSheep);
-      expect(Chroma.fromRGB(186, 0.666, 0.666, 0.666).hashCode, colorSheep);
-      expect(Chroma.fromRGB((186 / 255), 170, 170, 170).hashCode, colorSheep);
-
       expect(Chroma.fromRGB(254, 237, 186, 0.8).hashCode, colorFeedback);
-      expect(Chroma.fromRGB(254, 237, 186, 204).hashCode, colorFeedback);
 
-      //todo write tests with out of range values and examples with scientific notation
+      // TODO: Tests with out of range values and examples with scientific notation.
     });
 
     test('HSL syntax', () {
@@ -79,7 +72,7 @@ void main() {
 
       expect(Chroma.fromHSL(45, 0.971, 0.863, 0.8).hashCode, colorFeedback);
 
-      //todo write tests with out of range values and examples with scientific notation
+      // TODO: Tests with out of range values and examples with scientific notation.
     });
 
     test('HSV syntax', () {
@@ -96,7 +89,7 @@ void main() {
 
       expect(Chroma.fromHSV(45, 0.268, 0.996, 0.8).hashCode, colorFeedback);
 
-      //todo write tests with out of range values and examples with scientific notation
+      // TODO: Tests with out of range values and examples with scientific notation.
     });
 
     test('HWB syntax', () {
@@ -112,7 +105,7 @@ void main() {
       expect(Chroma.fromHWB(45, 0.729, 0.004, 0.8).hashCode, colorFeedback);
       expect(Chroma.fromHWB(0, .8, .8).hashCode, Color(0xFF808080).hashCode);
 
-      //todo write tests with out of range values and examples with scientific notation
+      // TODO: Tests with out of range values and examples with scientific notation.
     });
   });
 
@@ -132,8 +125,8 @@ void main() {
     });
 
     test('Components', () {
-      expect(colorHEX.components, {'r': 1, 'g': 0, 'b': 1, 'a': 1});
-      expect(colorRGB.components, {'r': 1, 'g': 0, 'b': 1, 'a': 1});
+      expect(colorHEX.components, {'r': 255, 'g': 0, 'b': 255, 'a': 1});
+      expect(colorRGB.components, {'r': 255, 'g': 0, 'b': 255, 'a': 1});
       expect(colorHSL.components, {'h': 300, 's': 1, 'l': .5, 'a': 1});
       expect(colorHSV.components, {'h': 300, 's': 1, 'v': 1, 'a': 1});
       expect(colorHWB.components, {'h': 300, 'w': 0, 'b': 0, 'a': 1});

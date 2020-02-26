@@ -13,6 +13,7 @@ List fromHSV(double hue, double saturation, double value,
   assert(alpha <= 1.0);
 
   hue = convertToDegrees(hue, angleUnit);
+
   final out = List(2)
     ..[0] = HSVColor.fromAHSV(alpha, hue, saturation, value).toColor().value
     ..[1] = {
