@@ -22,12 +22,13 @@ num toPercentage(double n) => checkFractional(n * 100);
 
 // Returns a 32 bit value representing a color with the specified components.
 int toColorValue(double red, double green, double blue, double alpha) {
+  // See <https://developer.android.com/reference/kotlin/android/graphics/Color#encoding>
   final r = red.round();
   final g = green.round();
   final b = blue.round();
   final a = (alpha * 0xFF).round();
 
-  return (a << 24) | (r << 16) | (g << 8) | (b << 0);
+  return (a & 0xFF) << 24 | (r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF);
 }
 
 // Convert angle to degree and normalize it in the range [0.0, 360.0)

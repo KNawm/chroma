@@ -63,8 +63,11 @@ class Chroma extends Color {
   /// All values, except for the hue, are doubles between 0.0 and 1.0.
   /// The hue is a double between 0.0 and 360.0.
   Map<String, double> get components => _components;
+  
+  @override
+  double get opacity => components.values.elementAt(3);
 
-  Chroma toGrayscale() {
+  Chroma grayscale() {
     // See <https://en.wikipedia.org/wiki/Grayscale>
     final linear = 0.2126 * (red / 0xFF) +
         0.7152 * (green / 0xFF) +
@@ -234,7 +237,7 @@ class Chroma extends Color {
   /// Returns the contrast ratio between 2 colors based on the WCAG 2.1 Standard
   /// as a double with a range from 1.0 to 21.0
   static double contrast(Chroma foreground, Chroma background) {
-    double lighter, darker;
+    var lighter, darker;
     final luminanceFg = foreground.computeLuminance();
     final luminanceBg = background.computeLuminance();
 
@@ -251,9 +254,11 @@ class Chroma extends Color {
         ((lighter + 0.05) / (darker + 0.05)).toStringAsFixed(2));
   }
 
+  /*
   static double difference() {
     // TODO: <https://en.wikipedia.org/wiki/color_difference>
   }
+  */
 
   @override
   String toString() {
@@ -263,12 +268,11 @@ class Chroma extends Color {
         var hexString = red.toRadixString(16).padLeft(2, '0') +
             green.toRadixString(16).padLeft(2, '0') +
             blue.toRadixString(16).padLeft(2, '0');
-
         if (alpha != 0xFF) {
           hexString += alpha.toRadixString(16).padLeft(2, '0');
         }
-
         return '#$hexString';
+
       case _ColorFormats.RGB:
         final a = components.values.elementAt(3);
         return alpha != 0xFF
@@ -302,7 +306,7 @@ class Chroma extends Color {
   }
 }
 
-// TODO: support LCH, LAB, HCL, CMYK.
+// TODO: support LAB, HCL (LCH), CMYK, HCG.
 // ignore: constant_identifier_names
 enum _ColorFormats { HEX, RGB, HSL, HSV, HWB }
 

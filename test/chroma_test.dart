@@ -142,10 +142,10 @@ void main() {
     });
 
     test('Grayscale', () {
-      expect(Chroma('black').toGrayscale(), Chroma.fromRGB(0, 0, 0));
-      expect(Chroma('white').toGrayscale(), Chroma.fromRGB(255, 255, 255));
-      expect(Chroma('red').toGrayscale(), Chroma.fromRGB(127, 127, 127));
-      expect(colorHEX.toGrayscale(), Chroma.fromRGB(145, 145, 145));
+      expect(Chroma('black').grayscale(), Chroma.fromRGB(0, 0, 0));
+      expect(Chroma('white').grayscale(), Chroma.fromRGB(255, 255, 255));
+      expect(Chroma('red').grayscale(), Chroma.fromRGB(127, 127, 127));
+      expect(colorHEX.grayscale(), Chroma.fromRGB(145, 145, 145));
     });
 
     test('Equality', () {
