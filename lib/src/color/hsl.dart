@@ -1,5 +1,5 @@
-import 'package:flutter/painting.dart' show HSLColor;
 import 'package:chroma/src/chroma_base.dart' show AngleUnits;
+import 'package:flutter/painting.dart' show HSLColor;
 
 import 'utils.dart' show convertToDegrees;
 

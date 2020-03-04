@@ -63,7 +63,7 @@ class Chroma extends Color {
   /// All values, except for the hue, are doubles between 0.0 and 1.0.
   /// The hue is a double between 0.0 and 360.0.
   Map<String, double> get components => _components;
-  
+
   @override
   double get opacity => components.values.elementAt(3);
 

@@ -1,9 +1,8 @@
 import 'dart:math' as math show pow;
 
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:chroma/src/chroma_base.dart' show AngleUnits;
 import 'package:chroma/src/color/utils.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Functions', () {
