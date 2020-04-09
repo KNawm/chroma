@@ -130,14 +130,23 @@ void main() {
       expect(colorHSV.components, {'h': 300, 's': 1, 'v': 1, 'a': 1});
       expect(colorHWB.components, {'h': 300, 'w': 0, 'b': 0, 'a': 1});
 
-      expect(colorHEX.toString(), '#ff00ff');
-      expect(colorRGB.toString(), 'rgb(255, 0, 255)');
-      expect(colorHSL.toString(), 'hsl(300, 100%, 50%)');
-      expect(colorHSV.toString(), 'hsv(300, 100%, 100%)');
-      expect(colorHWB.toString(), 'hwb(300, 0%, 0%)');
+      expect(colorHEX.toCssString(), '#ff00ff');
+      expect(colorRGB.toCssString(), 'rgb(255, 0, 255)');
+      expect(colorHSL.toCssString(), 'hsl(300, 100%, 50%)');
+      expect(colorHSV.toCssString(), 'hsv(300, 100%, 100%)');
+      expect(colorHWB.toCssString(), 'hwb(300, 0%, 0%)');
 
-      expect(Chroma('ccccccc5').toString(), '#ccccccc5');
-      expect(Chroma.fromRGB(0, 0, 255, .5).toString(), 'rgba(0, 0, 255, 0.5)');
+      expect(colorHEX.toString(), 'Chroma(\'#ff00ff\')');
+      expect(colorRGB.toString(), 'Chroma(\'#ff00ff\')');
+      expect(colorHSL.toString(), 'Chroma(\'#ff00ff\')');
+      expect(colorHSV.toString(), 'Chroma(\'#ff00ff\')');
+      expect(colorHWB.toString(), 'Chroma(\'#ff00ff\')');
+
+      expect(Chroma('ccccccc5').toCssString(), '#ccccccc5');
+      expect(Chroma.fromRGB(0, 0, 255, .5).toCssString(), 'rgba(0, 0, 255, 0.5)');
+
+      expect(Chroma('ccccccc5').toString(), 'Chroma(\'#ccccccc5\')');
+      expect(Chroma.fromRGB(0, 0, 255, .5).toString(), 'Chroma(\'#0000ff80\')');
     });
 
     test('Grayscale', () {

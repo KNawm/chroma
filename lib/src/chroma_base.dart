@@ -1,8 +1,11 @@
 import 'dart:math' as math show pow, Random;
 import 'dart:ui' show Color;
 
+import 'package:flutter/rendering.dart';
+
 import 'color/parser.dart' as parse;
 import 'color/utils.dart' as utils show checkFractional, toPercentage;
+import 'ops/ops.dart' as ops;
 
 class Chroma extends Color {
   final _ColorFormats _colorFormat;
@@ -53,9 +56,6 @@ class Chroma extends Color {
           [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
       Chroma._(parse.fromHWB(hue, whiteness, blackness, alpha, angleUnit),
           _ColorFormats.HWB);
-
-  static const Color _black = Color(0xFF000000);
-  static const Color _white = Color(0xFFFFFFFF);
 
   /// Returns the values of the 4 components of the color, which components are
   /// present depends on the color model.
@@ -207,6 +207,23 @@ class Chroma extends Color {
     }
   }
 
+  Chroma lerp(Chroma color1, Chroma color2, [double ratio = 0.5]) {
+    switch (_colorFormat) {
+      case _ColorFormats.HEX:
+        return 'hex';
+      /*case _ColorFormats.RGB:
+        return 'rgb';
+      case _ColorFormats.HSL:
+        return 'hsl';
+      case _ColorFormats.HSV:
+        return 'hsv';
+      case _ColorFormats.HWB:
+        return 'hwb';*/
+      default:
+        return null;
+    }
+  }
+
   String get format {
     switch (_colorFormat) {
       case _ColorFormats.HEX:
@@ -220,7 +237,7 @@ class Chroma extends Color {
       case _ColorFormats.HWB:
         return 'hwb';
       default:
-        return 'If you\'re seeing this, open an issue.';
+        return 'NaN';
     }
   }
 
@@ -260,8 +277,7 @@ class Chroma extends Color {
   }
   */
 
-  @override
-  String toString() {
+  String toCssString() {
     switch (_colorFormat) {
       case _ColorFormats.HEX:
         // TODO: support short hex output whenever possible
@@ -301,8 +317,19 @@ class Chroma extends Color {
         return alpha != 0xFF ? 'hwb($h, $w%, $b%, $a)' : 'hwb($h, $w%, $b%)';
 
       default:
-        return 'If you\'re seeing this, open an issue.';
+        return 'NaN';
     }
+  }
+
+  @override
+  String toString() {
+    var hex = value.toRadixString(16).padLeft(8, '0').substring(2);
+
+    if (alpha != 0xFF) {
+      hex += alpha.toRadixString(16).padLeft(2, '0');
+    }
+
+    return 'Chroma(\'#$hex\')';
   }
 }
 
