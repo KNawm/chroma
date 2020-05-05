@@ -1,6 +1,6 @@
 import 'dart:math' as math show pi;
 
-import 'package:chroma/src/chroma_base.dart' show AngleUnits;
+import 'package:chroma/chroma.dart' show AngleUnits;
 
 // Bound values in the range [0, 255] to [0.0, 1.0]
 double bound(num value) {

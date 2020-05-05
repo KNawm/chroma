@@ -1,4 +1,6 @@
-part of 'ops.dart';
+import 'dart:math' show sqrt, pow;
+
+import 'package:chroma/chroma.dart';
 
 Chroma blendLRGB(Chroma color1, Chroma color2, double ratio) {
   final r = sqrt(pow(color1.red,   2) * (1 - ratio) + pow(color2.red,   2) * ratio);
@@ -15,4 +17,3 @@ Chroma blendRGB(Chroma color1, Chroma color2, double ratio) {
   final a = color1.alpha * (1 - ratio) + color2.alpha * ratio;
   return Chroma.fromRGB(r, g, b, a);
 }
-
