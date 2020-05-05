@@ -60,11 +60,11 @@ void main() {
       expect(Chroma.fromHSL(300, 1.0, 0.5).hashCode, colorFuchsia);
       expect(Chroma.fromHSL(660, 1.0, 0.5).hashCode, colorFuchsia);
       expect(
-          Chroma.fromHSL(300 * 200 / 180, 1, .5, 1, AngleUnits.grad).hashCode,
+          Chroma.fromHSL(300 * 200 / 180, 1, .5, 1, AngleUnit.grad).hashCode,
           colorFuchsia);
-      expect(Chroma.fromHSL(300 * pi / 180, 1, .5, 1, AngleUnits.rad).hashCode,
+      expect(Chroma.fromHSL(300 * pi / 180, 1, .5, 1, AngleUnit.rad).hashCode,
           colorFuchsia);
-      expect(Chroma.fromHSL(300 / 360, 1.0, .5, 1, AngleUnits.turn).hashCode,
+      expect(Chroma.fromHSL(300 / 360, 1.0, .5, 1, AngleUnit.turn).hashCode,
           colorFuchsia);
 
       expect(Chroma.fromHSL(0, 0.104, 0.698, 0.666).hashCode, colorSheep);
@@ -77,11 +77,11 @@ void main() {
     test('HSV syntax', () {
       expect(Chroma.fromHSV(300, 1.0, 1.0).hashCode, colorFuchsia);
       expect(Chroma.fromHSV(660, 1.0, 1.0).hashCode, colorFuchsia);
-      expect(Chroma.fromHSV(300 * 200 / 180, 1, 1, 1, AngleUnits.grad).hashCode,
+      expect(Chroma.fromHSV(300 * 200 / 180, 1, 1, 1, AngleUnit.grad).hashCode,
           colorFuchsia);
-      expect(Chroma.fromHSV(300 * pi / 180, 1, 1, 1, AngleUnits.rad).hashCode,
+      expect(Chroma.fromHSV(300 * pi / 180, 1, 1, 1, AngleUnit.rad).hashCode,
           colorFuchsia);
-      expect(Chroma.fromHSV(300 / 360, 1.0, 1, 1, AngleUnits.turn).hashCode,
+      expect(Chroma.fromHSV(300 / 360, 1.0, 1, 1, AngleUnit.turn).hashCode,
           colorFuchsia);
 
       expect(Chroma.fromHSV(0, 0.086, 0.729, 0.666).hashCode, colorSheep);
@@ -94,11 +94,11 @@ void main() {
     test('HWB syntax', () {
       expect(Chroma.fromHWB(300, 0, 0, 1.0).hashCode, colorFuchsia);
       expect(Chroma.fromHWB(660, 0, 0, 1.0).hashCode, colorFuchsia);
-      expect(Chroma.fromHWB(300 * 200 / 180, 0, 0, 1, AngleUnits.grad).hashCode,
+      expect(Chroma.fromHWB(300 * 200 / 180, 0, 0, 1, AngleUnit.grad).hashCode,
           colorFuchsia);
-      expect(Chroma.fromHWB(300 * pi / 180, 0, 0, 1, AngleUnits.rad).hashCode,
+      expect(Chroma.fromHWB(300 * pi / 180, 0, 0, 1, AngleUnit.rad).hashCode,
           colorFuchsia);
-      expect(Chroma.fromHWB(300 / 360, 0, 0, 1, AngleUnits.turn).hashCode,
+      expect(Chroma.fromHWB(300 / 360, 0, 0, 1, AngleUnit.turn).hashCode,
           colorFuchsia);
       expect(Chroma.fromHWB(0, 0.665, 0.27, 0.666).hashCode, colorSheep);
       expect(Chroma.fromHWB(45, 0.729, 0.004, 0.8).hashCode, colorFeedback);

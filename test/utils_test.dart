@@ -1,6 +1,6 @@
 import 'dart:math' as math show pow;
 
-import 'package:chroma/src/chroma_base.dart' show AngleUnits;
+import 'package:chroma/src/chroma_base.dart' show AngleUnit;
 import 'package:chroma/src/color/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -48,20 +48,20 @@ void main() {
       final half = 180;
       final quarter = 90;
 
-      expect(convertToDegrees(0, AngleUnits.deg), equals(circle));
-      expect(convertToDegrees(0, AngleUnits.grad), equals(circle));
-      expect(convertToDegrees(0, AngleUnits.rad), equals(circle));
-      expect(convertToDegrees(0, AngleUnits.turn), equals(circle));
+      expect(convertToDegrees(0, AngleUnit.deg), equals(circle));
+      expect(convertToDegrees(0, AngleUnit.grad), equals(circle));
+      expect(convertToDegrees(0, AngleUnit.rad), equals(circle));
+      expect(convertToDegrees(0, AngleUnit.turn), equals(circle));
 
-      expect(convertToDegrees(180, AngleUnits.deg), equals(half));
-      expect(convertToDegrees(200, AngleUnits.grad), equals(half));
-      expect(convertToDegrees(3.14159, AngleUnits.rad), closeTo(half, 0.005));
-      expect(convertToDegrees(0.5, AngleUnits.turn), equals(half));
+      expect(convertToDegrees(180, AngleUnit.deg), equals(half));
+      expect(convertToDegrees(200, AngleUnit.grad), equals(half));
+      expect(convertToDegrees(3.14159, AngleUnit.rad), closeTo(half, 0.005));
+      expect(convertToDegrees(0.5, AngleUnit.turn), equals(half));
 
-      expect(convertToDegrees(90, AngleUnits.deg), equals(quarter));
-      expect(convertToDegrees(100, AngleUnits.grad), equals(quarter));
-      expect(convertToDegrees(1.5708, AngleUnits.rad), closeTo(quarter, 0.005));
-      expect(convertToDegrees(0.25, AngleUnits.turn), equals(quarter));
+      expect(convertToDegrees(90, AngleUnit.deg), equals(quarter));
+      expect(convertToDegrees(100, AngleUnit.grad), equals(quarter));
+      expect(convertToDegrees(1.5708, AngleUnit.rad), closeTo(quarter, 0.005));
+      expect(convertToDegrees(0.25, AngleUnit.turn), equals(quarter));
     });
   });
 }

@@ -1,6 +1,6 @@
 import 'dart:math' as math show pi;
 
-import 'package:chroma/chroma.dart' show AngleUnits;
+import 'package:chroma/chroma.dart' show AngleUnit;
 
 // Bound values in the range [0, 255] to [0.0, 1.0]
 double bound(num value) {
@@ -32,13 +32,13 @@ int toColorValue(double red, double green, double blue, double alpha) {
 }
 
 // Convert angle to degree and normalize it in the range [0.0, 360.0)
-double convertToDegrees(double value, AngleUnits unit) {
+double convertToDegrees(double value, AngleUnit unit) {
   switch (unit) {
-    case AngleUnits.grad:
+    case AngleUnit.grad:
       return (value * 180 / 200) % 360;
-    case AngleUnits.rad:
+    case AngleUnit.rad:
       return (value * 180 / math.pi) % 360;
-    case AngleUnits.turn:
+    case AngleUnit.turn:
       return (value * 360) % 360;
     default:
       return value % 360;

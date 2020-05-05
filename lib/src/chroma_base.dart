@@ -8,11 +8,11 @@ import 'color/utils.dart' as utils show checkFractional, toPercentage;
 import 'ops/ops.dart' as ops;
 
 class Chroma extends Color {
-  final _ColorFormats _colorFormat;
+  final _ColorFormat _format;
   final Map<String, double> _components;
 
-  Chroma._(List color, _ColorFormats format)
-      : _colorFormat = format,
+  Chroma._(List color, _ColorFormat format)
+      : _format = format,
         _components = color[1],
         super(color[0]);
 
@@ -26,8 +26,7 @@ class Chroma extends Color {
   /// TODO
   /// An alpha value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma(String value) {
-    assert(value.isNotEmpty);
-    return Chroma._(parse.fromString(value), _ColorFormats.HEX);
+    return Chroma._(parse.fromString(value), _ColorFormat.hex);
   }
 
   /// Creates a color by specifying red, green, blue and alpha as components.
@@ -41,22 +40,22 @@ class Chroma extends Color {
   /// An alpha value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma.fromRGB(double red, double green, double blue,
           [double alpha = 1.0]) =>
-      Chroma._(parse.fromRGB(red, green, blue, alpha), _ColorFormats.RGB);
+      Chroma._(parse.fromRGB(red, green, blue, alpha), _ColorFormat.rgb);
 
   factory Chroma.fromHSL(double hue, double saturation, double lightness,
-          [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
+          [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) =>
       Chroma._(parse.fromHSL(hue, saturation, lightness, alpha, angleUnit),
-          _ColorFormats.HSL);
+          _ColorFormat.hsl);
 
   factory Chroma.fromHSV(double hue, double saturation, double value,
-          [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
+          [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) =>
       Chroma._(parse.fromHSV(hue, saturation, value, alpha, angleUnit),
-          _ColorFormats.HSV);
+          _ColorFormat.hsv);
 
   factory Chroma.fromHWB(double hue, double whiteness, double blackness,
-          [double alpha = 1.0, AngleUnits angleUnit = AngleUnits.deg]) =>
+          [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) =>
       Chroma._(parse.fromHWB(hue, whiteness, blackness, alpha, angleUnit),
-          _ColorFormats.HWB);
+          _ColorFormat.hwb);
 
   /// Returns the values of the 4 components of the color, which components are
   /// present depends on the color model.
@@ -127,7 +126,7 @@ class Chroma extends Color {
   Chroma withValue(String component, double value) {
     final c = List.from(components.values);
 
-    if (_colorFormat == _ColorFormats.HEX) {
+    if (_format == _ColorFormat.hex) {
       if (component == 'r' ||
           component == 'R' ||
           component == 'red' ||
@@ -149,7 +148,7 @@ class Chroma extends Color {
           component == 'ALPHA') {
         return Chroma.fromRGB(c[0], c[1], c[2], value);
       }
-    } else if (_colorFormat == _ColorFormats.RGB) {
+    } else if (_format == _ColorFormat.rgb) {
       if (component == 'r' ||
           component == 'R' ||
           component == 'red' ||
@@ -171,7 +170,7 @@ class Chroma extends Color {
           component == 'ALPHA') {
         return Chroma.fromRGB(c[0], c[1], c[2], value);
       }
-    } else if (_colorFormat == _ColorFormats.HSL) {
+    } else if (_format == _ColorFormat.hsl) {
       if (component == 'h' ||
           component == 'H' ||
           component == 'hue' ||
@@ -193,7 +192,7 @@ class Chroma extends Color {
           component == 'ALPHA') {
         return Chroma.fromHSL(c[0], c[1], c[2], value);
       }
-    } else if (_colorFormat == _ColorFormats.HSV) {
+    } else if (_format == _ColorFormat.hsv) {
       if (component == 'h' ||
           component == 'H' ||
           component == 'hue' ||
@@ -215,7 +214,7 @@ class Chroma extends Color {
           component == 'ALPHA') {
         return Chroma.fromHSV(c[0], c[1], c[2], value);
       }
-    } else if (_colorFormat == _ColorFormats.HWB) {
+    } else if (_format == _ColorFormat.hwb) {
       if (component == 'h' ||
           component == 'H' ||
           component == 'hue' ||
@@ -241,29 +240,29 @@ class Chroma extends Color {
   }
 
   Chroma lerp(Chroma color1, Chroma color2, [double ratio = 0.5]) {
-    if (_colorFormat == _ColorFormats.HEX) {
+    /*if (_colorFormat == _Formats.HEX) {
       return 'hex';
-    } else if (_colorFormat == _ColorFormats.RGB) {
+    } else if (_colorFormat == _Formats.RGB) {
       return 'rgb';
-    } else if (_colorFormat == _ColorFormats.HSL) {
+    } else if (_colorFormat == _Formats.HSL) {
       return 'hsl';
-    } else if (_colorFormat == _ColorFormats.HSV) {
+    } else if (_colorFormat == _Formats.HSV) {
       return 'hsv';
-    } else if (_colorFormat == _ColorFormats.HWB) {
+    } else if (_colorFormat == _Formats.HWB) {
       return 'hwb';
-    }
+    }*/
   }
 
   String get format {
-    if (_colorFormat == _ColorFormats.HEX) {
+    if (_format == _ColorFormat.hex) {
       return 'hex';
-    } else if (_colorFormat == _ColorFormats.RGB) {
+    } else if (_format == _ColorFormat.rgb) {
       return 'rgb';
-    } else if (_colorFormat == _ColorFormats.HSL) {
+    } else if (_format == _ColorFormat.hsl) {
       return 'hsl';
-    } else if (_colorFormat == _ColorFormats.HSV) {
+    } else if (_format == _ColorFormat.hsv) {
       return 'hsv';
-    } else if (_colorFormat == _ColorFormats.HWB) {
+    } else if (_format == _ColorFormat.hwb) {
       return 'hwb';
     }
   }
@@ -305,7 +304,7 @@ class Chroma extends Color {
   */
 
   String toCssString() {
-    if (_colorFormat == _ColorFormats.HEX) {
+    if (_format == _ColorFormat.hex) {
       // TODO: support short hex output whenever possible
       var hexString = red.toRadixString(16).padLeft(2, '0') +
           green.toRadixString(16).padLeft(2, '0') +
@@ -314,24 +313,24 @@ class Chroma extends Color {
         hexString += alpha.toRadixString(16).padLeft(2, '0');
       }
       return '#$hexString';
-    } else if (_colorFormat == _ColorFormats.RGB) {
+    } else if (_format == _ColorFormat.rgb) {
       final a = components.values.elementAt(3);
       return alpha != 0xFF
           ? 'rgba($red, $green, $blue, $a)'
           : 'rgb($red, $green, $blue)';
-    } else if (_colorFormat == _ColorFormats.HSL) {
+    } else if (_format == _ColorFormat.hsl) {
       final h = utils.checkFractional(components.values.elementAt(0));
       final s = utils.toPercentage(components.values.elementAt(1));
       final l = utils.toPercentage(components.values.elementAt(2));
       final a = components.values.elementAt(3);
       return alpha != 0xFF ? 'hsla($h, $s%, $l%, $a)' : 'hsl($h, $s%, $l%)';
-    } else if (_colorFormat == _ColorFormats.HSV) {
+    } else if (_format == _ColorFormat.hsv) {
       final h = utils.checkFractional(components.values.elementAt(0));
       final s = utils.toPercentage(components.values.elementAt(1));
       final v = utils.toPercentage(components.values.elementAt(2));
       final a = components.values.elementAt(3);
       return alpha != 0xFF ? 'hsv($h, $s%, $v%, $a)' : 'hsv($h, $s%, $v%)';
-    } else if (_colorFormat == _ColorFormats.HWB) {
+    } else if (_format == _ColorFormat.hwb) {
       final h = utils.checkFractional(components.values.elementAt(0));
       final w = utils.toPercentage(components.values.elementAt(1));
       final b = utils.toPercentage(components.values.elementAt(2));
@@ -352,8 +351,5 @@ class Chroma extends Color {
   }
 }
 
-// TODO: support LAB, HCL (LCH), CMYK, HCG.
-// ignore: constant_identifier_names
-enum _ColorFormats { HEX, RGB, HSL, HSV, HWB }
-
-enum AngleUnits { deg, grad, rad, turn }
+enum _ColorFormat { hex, rgb, hsl, hsv, hwb }
+enum AngleUnit { deg, grad, rad, turn }

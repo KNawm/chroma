@@ -5,6 +5,8 @@ bool _isAsciiHexDigit(int c) =>
     (c >= 97 && c <= 102) || (c >= 65 && c <= 70) || (c >= 48 && c <= 57);
 
 List fromString(String value) {
+  assert(value.isNotEmpty);
+
   value = value.toLowerCase();
 
   return fromNamed(value) ?? fromHEX(value);
