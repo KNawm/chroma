@@ -60,14 +60,13 @@ double linearToSrgb(num value) {
 
 // Convert angle to degree and normalize it in the range [0.0, 360.0)
 double convertToDegrees(double value, AngleUnit unit) {
-  switch (unit) {
-    case AngleUnit.grad:
-      return (value * 180 / 200) % 360;
-    case AngleUnit.rad:
-      return (value * 180 / math.pi) % 360;
-    case AngleUnit.turn:
-      return (value * 360) % 360;
-    default:
-      return value % 360;
+  if (unit == AngleUnit.deg) {
+    return value % 360;
+  } else if (unit == AngleUnit.grad) {
+    return (value * 180 / 200) % 360;
+  } else if (unit == AngleUnit.rad) {
+    return (value * 180 / math.pi) % 360;
+  } else if (unit == AngleUnit.turn) {
+    return (value * 360) % 360;
   }
 }
