@@ -6,13 +6,28 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Functions', () {
-    test('bound()', () {
-      final minRGB = 0x00;
-      final maxRGB = 0xFF;
+    test('clamp()', () {
+      final min = 0.0, max = 1.0;
 
-      expect(bound(minRGB.toDouble()), equals(0.0));
-      expect(bound(maxRGB.toDouble()), equals(1.0));
-      expect(bound(maxRGB / 2), equals(0.5));
+      expect(clamp(min - 1), equals(0.0));
+      expect(clamp(max / 2), equals(0.5));
+      expect(clamp(max + 1), equals(1.0));
+    });
+
+    test('clamp8()', () {
+      final min = 0x00, max = 0xFF;
+
+      expect(clamp8((min - 1).toDouble()), equals(0));
+      expect(clamp8((max / 2).toDouble()), equals(127.5));
+      expect(clamp8((max + 1).toDouble()), equals(255));
+    });
+
+    test('bound()', () {
+      final min = 0x00, max = 0xFF;
+
+      expect(bound(min.toDouble()), equals(0.0));
+      expect(bound(max.toDouble()), equals(1.0));
+      expect(bound(max / 2), equals(0.5));
     });
 
     test('checkFractional()', () {
@@ -59,9 +74,7 @@ void main() {
     });
 
     test('convertToDegrees()', () {
-      final circle = 0;
-      final half = 180;
-      final quarter = 90;
+      final circle = 0, quarter = 90, half = 180;
 
       expect(convertToDegrees(0, AngleUnit.deg) , equals(circle));
       expect(convertToDegrees(0, AngleUnit.grad), equals(circle));
