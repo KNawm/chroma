@@ -44,7 +44,7 @@ void main() {
     });
 
     test('srgbToLinear()', () {
-      expect(srgbToLinear(0 / 0xFF), equals(0));
+      expect(srgbToLinear(0   / 0xFF), equals(0));
       expect(srgbToLinear(128 / 0xFF), equals(0.21586050011389926));
       expect(srgbToLinear(187 / 0xFF), equals(0.4969329950608704));
       expect(srgbToLinear(255 / 0xFF), equals(1));
@@ -52,10 +52,10 @@ void main() {
 
     test('linearToSrgb()', () {
       // Round-trips with srgbToLinear()
-      expect(linearToSrgb(srgbToLinear(0 / 0xFF)) * 0xFF, equals(0));
-      expect(linearToSrgb(srgbToLinear(128 / 0xFF)) * 0xFF, equals(128));
-      expect(linearToSrgb(srgbToLinear(187 / 0xFF)) * 0xFF, equals(187));
-      expect(linearToSrgb(srgbToLinear(255 / 0xFF)) * 0xFF, equals(255));
+      expect((linearToSrgb((srgbToLinear(0   / 0xFF))) * 0xFF).round(), equals(0));
+      expect((linearToSrgb((srgbToLinear(128 / 0xFF))) * 0xFF).round(), equals(128));
+      expect((linearToSrgb((srgbToLinear(187 / 0xFF))) * 0xFF).round(), equals(187));
+      expect((linearToSrgb((srgbToLinear(255 / 0xFF))) * 0xFF).round(), equals(255));
     });
 
     test('convertToDegrees()', () {
@@ -63,9 +63,9 @@ void main() {
       final half = 180;
       final quarter = 90;
 
-      expect(convertToDegrees(0, AngleUnit.deg), equals(circle));
+      expect(convertToDegrees(0, AngleUnit.deg) , equals(circle));
       expect(convertToDegrees(0, AngleUnit.grad), equals(circle));
-      expect(convertToDegrees(0, AngleUnit.rad), equals(circle));
+      expect(convertToDegrees(0, AngleUnit.rad) , equals(circle));
       expect(convertToDegrees(0, AngleUnit.turn), equals(circle));
 
       expect(convertToDegrees(180, AngleUnit.deg), equals(half));
