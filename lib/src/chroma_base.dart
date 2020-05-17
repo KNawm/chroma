@@ -76,6 +76,21 @@ class Chroma extends Color {
   @override
   double get opacity => components.values.elementAt(3);
 
+  /// Returns the format of the color.
+  String get format {
+    if (_format == _ColorFormat.hex) {
+      return 'hex';
+    } else if (_format == _ColorFormat.rgb) {
+      return 'rgb';
+    } else if (_format == _ColorFormat.hsl) {
+      return 'hsl';
+    } else if (_format == _ColorFormat.hsv) {
+      return 'hsv';
+    } else if (_format == _ColorFormat.hwb) {
+      return 'hwb';
+    }
+  }
+
   Chroma grayscale() {
     // See <https://en.wikipedia.org/wiki/Grayscale>
     final linear = 0.2126 * (utils.srgbToLinear(red   / 0xFF)) +
@@ -136,125 +151,58 @@ class Chroma extends Color {
   /// The hue is a double between 0.0 and 360.0.
   Chroma withValue(String component, double value) {
     final c = List.from(components.values);
+    component = component.toLowerCase();
 
-    if (_format == _ColorFormat.hex) {
-      if (component == 'r' ||
-          component == 'R' ||
-          component == 'red' ||
-          component == 'RED') {
-        return Chroma.fromRGB(value, c[1], c[2], c[3]);
-      } else if (component == 'g' ||
-          component == 'G' ||
-          component == 'green' ||
-          component == 'GREEN') {
-        return Chroma.fromRGB(c[0], value, c[2], c[3]);
-      } else if (component == 'b' ||
-          component == 'B' ||
-          component == 'blue' ||
-          component == 'BLUE') {
-        return Chroma.fromRGB(c[0], c[1], value, c[3]);
-      } else if (component == 'a' ||
-          component == 'A' ||
-          component == 'alpha' ||
-          component == 'ALPHA') {
-        return Chroma.fromRGB(c[0], c[1], c[2], value);
-      }
-    } else if (_format == _ColorFormat.rgb) {
-      if (component == 'r' ||
-          component == 'R' ||
-          component == 'red' ||
-          component == 'RED') {
-        return Chroma.fromRGB(value, c[1], c[2], c[3]);
-      } else if (component == 'g' ||
-          component == 'G' ||
-          component == 'green' ||
-          component == 'GREEN') {
-        return Chroma.fromRGB(c[0], value, c[2], c[3]);
-      } else if (component == 'b' ||
-          component == 'B' ||
-          component == 'blue' ||
-          component == 'BLUE') {
-        return Chroma.fromRGB(c[0], c[1], value, c[3]);
-      } else if (component == 'a' ||
-          component == 'A' ||
-          component == 'alpha' ||
-          component == 'ALPHA') {
+    if (_format == _ColorFormat.hex || _format == _ColorFormat.rgb) {
+      if (component == 'r' || component == 'red') {
+        return Chroma.fromRGB(value * 0xFF, c[1], c[2], c[3]);
+      } else if (component == 'g' || component == 'green') {
+        return Chroma.fromRGB(c[0], value * 0xFF, c[2], c[3]);
+      } else if (component == 'b' || component == 'blue') {
+        return Chroma.fromRGB(c[0], c[1], value * 0xFF, c[3]);
+      } else if (component == 'a' || component == 'alpha') {
         return Chroma.fromRGB(c[0], c[1], c[2], value);
       }
     } else if (_format == _ColorFormat.hsl) {
-      if (component == 'h' ||
-          component == 'H' ||
-          component == 'hue' ||
-          component == 'HUE') {
+      if (component == 'h' || component == 'hue') {
         return Chroma.fromHSL(value, c[1], c[2], c[3]);
-      } else if (component == 's' ||
-          component == 'S' ||
-          component == 'saturation' ||
-          component == 'SATURATION') {
+      } else if (component == 's' || component == 'saturation') {
         return Chroma.fromHSL(c[0], value, c[2], c[3]);
-      } else if (component == 'l' ||
-          component == 'L' ||
-          component == 'lightness' ||
-          component == 'LIGHTNESS') {
+      } else if (component == 'l' || component == 'lightness') {
         return Chroma.fromHSL(c[0], c[1], value, c[3]);
-      } else if (component == 'a' ||
-          component == 'A' ||
-          component == 'alpha' ||
-          component == 'ALPHA') {
+      } else if (component == 'a' ||  component == 'alpha') {
         return Chroma.fromHSL(c[0], c[1], c[2], value);
       }
     } else if (_format == _ColorFormat.hsv) {
-      if (component == 'h' ||
-          component == 'H' ||
-          component == 'hue' ||
-          component == 'HUE') {
+      if (component == 'h' || component == 'hue') {
         return Chroma.fromHSV(value, c[1], c[2], c[3]);
-      } else if (component == 's' ||
-          component == 'S' ||
-          component == 'saturation' ||
-          component == 'SATURATION') {
+      } else if (component == 's' || component == 'saturation') {
         return Chroma.fromHSV(c[0], value, c[2], c[3]);
-      } else if (component == 'v' ||
-          component == 'V' ||
-          component == 'value' ||
-          component == 'VALUE') {
+      } else if (component == 'v' || component == 'value') {
         return Chroma.fromHSV(c[0], c[1], value, c[3]);
-      } else if (component == 'a' ||
-          component == 'A' ||
-          component == 'alpha' ||
-          component == 'ALPHA') {
+      } else if (component == 'a' || component == 'alpha') {
         return Chroma.fromHSV(c[0], c[1], c[2], value);
       }
     } else if (_format == _ColorFormat.hwb) {
-      if (component == 'h' ||
-          component == 'H' ||
-          component == 'hue' ||
-          component == 'HUE') {
+      if (component == 'h' || component == 'hue') {
         return Chroma.fromHWB(value, c[1], c[2], c[3]);
-      } else if (component == 's' ||
-          component == 'S' ||
-          component == 'whiteness' ||
-          component == 'WHITENESS') {
+      } else if (component == 'w' || component == 'whiteness') {
         return Chroma.fromHWB(c[0], value, c[2], c[3]);
-      } else if (component == 'v' ||
-          component == 'V' ||
-          component == 'blackness' ||
-          component == 'BLACKNESS') {
+      } else if (component == 'b' || component == 'blackness') {
         return Chroma.fromHWB(c[0], c[1], value, c[3]);
-      } else if (component == 'a' ||
-          component == 'A' ||
-          component == 'alpha' ||
-          component == 'ALPHA') {
+      } else if (component == 'a' || component == 'alpha') {
         return Chroma.fromHWB(c[0], c[1], c[2], value);
       }
     }
+
+    throw ArgumentError.value(component, 'component');
   }
 
   /// Linearly interpolate between [color1] and [color2] based on the given [ratio].
   ///
   /// You can specify the color space used for interpolation using [mode].
   /// Available modes are: 'linear' and 'rgb'.
-  Chroma lerp(Chroma color1, Chroma color2, [double ratio = 0.5, String mode = 'linear']) {
+  static Chroma lerp(Chroma color1, Chroma color2, [double ratio = 0.5, String mode = 'linear']) {
     var r1, r2, g1, g2, b1, b2, a1, a2;
     ratio = utils.clamp(ratio);
 
@@ -277,7 +225,7 @@ class Chroma extends Color {
       a1 = color1.alpha;
       a2 = color2.alpha;
     } else {
-      throw ArgumentError.value(mode, mode);
+      throw ArgumentError.value(mode, 'mode');
     }
 
     final r = r1 * (1 - ratio) + r2 * ratio;
@@ -286,21 +234,6 @@ class Chroma extends Color {
     final a = a1 * (1 - ratio) + a2 * ratio;
 
     return Chroma.fromRGB(r, g, b, a);
-  }
-
-  /// Returns the format of the color.
-  String get format {
-    if (_format == _ColorFormat.hex) {
-      return 'hex';
-    } else if (_format == _ColorFormat.rgb) {
-      return 'rgb';
-    } else if (_format == _ColorFormat.hsl) {
-      return 'hsl';
-    } else if (_format == _ColorFormat.hsv) {
-      return 'hsv';
-    } else if (_format == _ColorFormat.hwb) {
-      return 'hwb';
-    }
   }
 
   /// Returns a random fully opaque color.

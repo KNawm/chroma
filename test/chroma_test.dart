@@ -123,6 +123,40 @@ void main() {
       expect(colorHWB.format, equals('hwb'));
     });
 
+    test('withComponent functions', () {
+      expect(colorHEX.withRed(0), equals(Chroma('blue')));
+      expect(colorRGB.withGreen(255), equals(Chroma('white')));
+      expect(colorHSL.withBlue(0), equals(Chroma('red')));
+      expect(colorHSV.withAlpha(128), equals(Chroma.fromRGB(255, 0, 255, .5)));
+      expect(colorHWB.withOpacity(0.5), equals(Chroma.fromRGB(255, 0, 255, .5)));
+
+      expect(colorRGB.withValue('RED', 0), equals(Chroma('blue')));
+      expect(colorRGB.withValue('G', 1), equals(Chroma('white')));
+      expect(colorRGB.withValue('blue', 0), equals(Chroma('red')));
+      expect(colorRGB.withValue('a', 0.5), equals(Chroma.fromRGB(255, 0, 255, .5)));
+
+      expect(colorHSL.withValue('HUE', 0), equals(Chroma('red')));
+      expect(colorHSL.withValue('S', .5), equals(Chroma('#bf40bf')));
+      expect(colorHSL.withValue('lightness', .25), equals(Chroma('#800080')));
+      expect(colorHSL.withValue('a', .5), equals(Chroma.fromHSL(300, 1, .5, .5)));
+
+      expect(colorHSV.withValue('HUE', 0), equals(Chroma('red')));
+      expect(colorHSV.withValue('S', .5), equals(Chroma('#ff80ff')));
+      expect(colorHSV.withValue('value', .5), equals(Chroma('#800080')));
+      expect(colorHSV.withValue('a', .5), equals(Chroma.fromHSV(300, 1, 1, .5)));
+
+      expect(colorHWB.withValue('HUE', 0), equals(Chroma('red')));
+      expect(colorHWB.withValue('W', .5), equals(Chroma('#ff80ff')));
+      expect(colorHWB.withValue('blackness', .5), equals(Chroma('#800080')));
+      expect(colorHWB.withValue('a', .5), equals(Chroma.fromHWB(300, 0, 0, .5)));
+
+      expect(() => colorHEX.withValue('', 0), throwsArgumentError);
+      expect(() => colorRGB.withValue('alpha0', 0), throwsArgumentError);
+      expect(() => colorHSL.withValue('value', 0), throwsArgumentError);
+      expect(() => colorHSV.withValue('RED', 0), throwsArgumentError);
+      expect(() => colorHWB.withValue('null', 0), throwsArgumentError);
+    });
+
     test('Components', () {
       expect(colorHEX.components, {'r': 255, 'g': 0, 'b': 255, 'a': 1});
       expect(colorRGB.components, {'r': 255, 'g': 0, 'b': 255, 'a': 1});
