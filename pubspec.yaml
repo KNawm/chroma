@@ -1,7 +1,7 @@
 name: chroma
+version: 0.1.0-dev
 description: A color library for creating, converting and manipulating colors.
-version: 1.0.0
-author: Tomás Arias <hi@tomasarias.me>
+homepage: https://github.com/KNawm/chroma
 repository: https://github.com/KNawm/chroma
 
 environment:
