@@ -43,6 +43,21 @@ void main() {
       expect(toColorValue(128, 128, 128, 0.5).toRadixString(16), '80808080');
     });
 
+    test('srgbToLinear()', () {
+      expect(srgbToLinear(0 / 0xFF), equals(0));
+      expect(srgbToLinear(128 / 0xFF), equals(0.21586050011389926));
+      expect(srgbToLinear(187 / 0xFF), equals(0.4969329950608704));
+      expect(srgbToLinear(255 / 0xFF), equals(1));
+    });
+
+    test('linearToSrgb()', () {
+      // Round-trips with srgbToLinear()
+      expect(linearToSrgb(srgbToLinear(0 / 0xFF)) * 0xFF, equals(0));
+      expect(linearToSrgb(srgbToLinear(128 / 0xFF)) * 0xFF, equals(128));
+      expect(linearToSrgb(srgbToLinear(187 / 0xFF)) * 0xFF, equals(187));
+      expect(linearToSrgb(srgbToLinear(255 / 0xFF)) * 0xFF, equals(255));
+    });
+
     test('convertToDegrees()', () {
       final circle = 0;
       final half = 180;

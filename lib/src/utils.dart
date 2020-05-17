@@ -48,7 +48,7 @@ double srgbToLinear(num value) {
     return value / 12.92;
   }
 
-  return math.pow((value + a) / 1 + a, 2.4);
+  return math.pow((value + a) / (1 + a), 2.4);
 }
 
 double linearToSrgb(num value) {
