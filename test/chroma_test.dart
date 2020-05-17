@@ -200,12 +200,22 @@ void main() {
   });
 
   group('Chroma functions', () {
-    final black = Chroma('black');
-    final white = Chroma('white');
+    final black   = Chroma('black');
+    final white   = Chroma('white');
+    final red     = Chroma('red');
+    final green   = Chroma('green');
+    final blue    = Chroma('blue');
     final fuchsia = Chroma('fuchsia');
 
     test('Random', () {
       expect(Chroma.random(), isA<Chroma>());
+    });
+
+    test('Lerp', () {
+      expect(Chroma.lerp(white, black, .5), equals(Chroma('#bbbbbb')));
+      expect(Chroma.lerp(red, blue, .5), equals(Chroma('#bb00bb')));
+      expect(Chroma.lerp(white, black, .5, 'rgb'), equals(Chroma('gray')));
+      expect(Chroma.lerp(red, blue, .5, 'rgb'), equals(Chroma('#800080')));
     });
 
     test('Contrast ratio', () {

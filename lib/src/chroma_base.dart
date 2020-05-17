@@ -203,37 +203,34 @@ class Chroma extends Color {
   /// You can specify the color space used for interpolation using [mode].
   /// Available modes are: 'linear' and 'rgb'.
   static Chroma lerp(Chroma color1, Chroma color2, [double ratio = 0.5, String mode = 'linear']) {
-    var r1, r2, g1, g2, b1, b2, a1, a2;
     ratio = utils.clamp(ratio);
 
     if (mode == 'linear') {
-      r1 = utils.srgbToLinear(color1.red);
-      r2 = utils.srgbToLinear(color2.red);
-      g1 = utils.srgbToLinear(color1.green);
-      g2 = utils.srgbToLinear(color2.green);
-      b1 = utils.srgbToLinear(color1.blue);
-      b2 = utils.srgbToLinear(color2.blue);
-      a1 = utils.srgbToLinear(color1.alpha);
-      a2 = utils.srgbToLinear(color2.alpha);
+      final r1 = utils.srgbToLinear(color1.red / 0xFF);
+      final r2 = utils.srgbToLinear(color2.red / 0xFF);
+      final g1 = utils.srgbToLinear(color1.green / 0xFF);
+      final g2 = utils.srgbToLinear(color2.green / 0xFF);
+      final b1 = utils.srgbToLinear(color1.blue / 0xFF);
+      final b2 = utils.srgbToLinear(color2.blue / 0xFF);
+      final a1 = utils.srgbToLinear(color1.opacity);
+      final a2 = utils.srgbToLinear(color2.opacity);
+
+      final r = utils.linearToSrgb(r1 * (1 - ratio) + r2 * ratio) * 0xFF;
+      final g = utils.linearToSrgb(g1 * (1 - ratio) + g2 * ratio) * 0xFF;
+      final b = utils.linearToSrgb(b1 * (1 - ratio) + b2 * ratio) * 0xFF;
+      final a = utils.linearToSrgb(a1 * (1 - ratio) + a2 * ratio);
+
+      return Chroma.fromRGB(r, g, b, a);
     } else if (mode == 'rgb') {
-      r1 = color1.red;
-      r2 = color2.red;
-      g1 = color1.green;
-      g2 = color2.green;
-      b1 = color1.blue;
-      b2 = color2.blue;
-      a1 = color1.alpha;
-      a2 = color2.alpha;
+      final r = (color1.red    * (1 - ratio) + color2.red * ratio).roundToDouble();
+      final g = (color1.green  * (1 - ratio) + color2.green * ratio).roundToDouble();
+      final b = (color1.blue   * (1 - ratio) + color2.blue * ratio).roundToDouble();
+      final a = color1.opacity * (1 - ratio) + color2.opacity * ratio;
+
+      return Chroma.fromRGB(r, g, b, a);
     } else {
       throw ArgumentError.value(mode, 'mode');
     }
-
-    final r = r1 * (1 - ratio) + r2 * ratio;
-    final g = g1 * (1 - ratio) + g2 * ratio;
-    final b = b1 * (1 - ratio) + b2 * ratio;
-    final a = a1 * (1 - ratio) + a2 * ratio;
-
-    return Chroma.fromRGB(r, g, b, a);
   }
 
   /// Returns a random fully opaque color.
