@@ -1,10 +1,10 @@
-import 'dart:math' as math show pow, Random;
+import 'dart:math' as math show pow, Random, sqrt;
 import 'dart:ui' show Color;
 
 import 'package:flutter/rendering.dart';
 
 import 'color/parser.dart' as parse;
-import 'utils.dart' as utils show clamp, checkFractional, toPercentage, srgbToLinear;
+import 'utils.dart' as utils show clamp, checkFractional, toPercentage, srgbToLinear, linearToSrgb;
 
 class Chroma extends Color {
   final _ColorFormat _format;
@@ -16,41 +16,51 @@ class Chroma extends Color {
         super(color[0]);
 
   /// Creates a color by specifying red, green, blue and alpha as components.
-  ///
-  /// Each component is a double with a range from 0.0 to 1.0 or an integer with a range from 0 to 255.
-  /// You can mix integers and doubles as you please, using 255 is equivalent to using 1.0,
-  /// but be careful with the type of the number because you could end up with an
-  /// unexpected color because 1.0 is not the same as 1.
-  ///
-  /// TODO
-  /// An alpha value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma(String value) {
     return Chroma._(parse.fromString(value), _ColorFormat.hex);
   }
 
-  /// Creates a color by specifying red, green, blue and alpha as components.
+  /// Creates a color by specifying [red], [green], [blue] and [alpha] as components.
   ///
-  /// Each component is a double with a range from 0.0 to 1.0 or an integer with a range from 0 to 255.
-  /// You can mix integers and doubles as you please, using 255 is equivalent to using 1.0,
-  /// but be careful with the type of the number because you could end up with an
-  /// unexpected color because 1.0 is not the same as 1.
+  /// All components, except for the [alpha], are doubles between 0 and 255.
+  /// The [alpha] is a double between 0.0 and 1.0.
   ///
-  /// TODO
-  /// An alpha value of 1.0 is completely opaque, and 0.0 is completely transparent.
+  /// An [alpha] value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma.fromRGB(double red, double green, double blue,
           [double alpha = 1.0]) =>
       Chroma._(parse.fromRGB(red, green, blue, alpha), _ColorFormat.rgb);
 
+  /// Creates a color by specifying [hue], [saturation], [lightness] and [alpha] as components.
+  ///
+  /// All components, except for the [hue], are doubles between 0.0 and 1.0.
+  /// The [hue] is a double without range as you can specify the angular unit of
+  /// your preference using [angleUnit].
+  ///
+  /// An [alpha] value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma.fromHSL(double hue, double saturation, double lightness,
           [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) =>
       Chroma._(parse.fromHSL(hue, saturation, lightness, alpha, angleUnit),
           _ColorFormat.hsl);
 
+  /// Creates a color by specifying [hue], [saturation], [value] and [alpha] as components.
+  ///
+  /// All components, except for the [hue], are doubles between 0.0 and 1.0.
+  /// The [hue] is a double without range as you can specify the angular unit of
+  /// your preference using [angleUnit].
+  ///
+  /// An [alpha] value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma.fromHSV(double hue, double saturation, double value,
           [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) =>
       Chroma._(parse.fromHSV(hue, saturation, value, alpha, angleUnit),
           _ColorFormat.hsv);
 
+  /// Creates a color by specifying [hue], [whiteness], [blackness] and [alpha] as components.
+  ///
+  /// All components, except for the [hue], are doubles between 0.0 and 1.0.
+  /// The [hue] is a double without range as you can specify the angular unit of
+  /// your preference using [angleUnit].
+  ///
+  /// An [alpha] value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma.fromHWB(double hue, double whiteness, double blackness,
           [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) =>
       Chroma._(parse.fromHWB(hue, whiteness, blackness, alpha, angleUnit),
@@ -68,60 +78,62 @@ class Chroma extends Color {
 
   Chroma grayscale() {
     // See <https://en.wikipedia.org/wiki/Grayscale>
-    final linear = 0.2126 * (utils.srgbToLinear(red)   / 0xFF) +
-                   0.7152 * (utils.srgbToLinear(green) / 0xFF) +
-                   0.0722 * (utils.srgbToLinear(blue)  / 0xFF);
+    final linear = 0.2126 * (utils.srgbToLinear(red   / 0xFF)) +
+                   0.7152 * (utils.srgbToLinear(green / 0xFF)) +
+                   0.0722 * (utils.srgbToLinear(blue  / 0xFF));
 
     // Gamma compression
-    final srgb = linear <= 0.0031308
-        ? 12.92 * linear * 0xFF
-        : (1.055 * math.pow(linear, 1 / 2.4) - 0.055) * 0xFF;
+    var srgb = (utils.linearToSrgb(linear) * 0xFF).roundToDouble();
 
-    // TODO: maybe don't explicitly change the color model
+    // TODO: maybe don't implicitly change the color model
     return Chroma.fromRGB(srgb, srgb, srgb, opacity);
   }
 
-  /*/// Returns a new color that matches this color with the red channel replaced
-  /// with the given value.
+  /// Returns a new color that matches this color with the red channel replaced
+  /// with the given value. The value is an integer with a range from 0 to 255.
   @override
-  Chroma withRed(num value) {
-    return Color.fromARGB(alpha, r, green, blue);
+  Chroma withRed(int value) {
+    assert(value >= 0 && value <= 255);
+    return Chroma.fromRGB(value.toDouble(), green.toDouble(), blue.toDouble(), opacity);
   }
 
   /// Returns a new color that matches this color with the green channel replaced
-  /// with the given value.
+  /// with the given value. The value is an integer with a range from 0 to 255.
   @override
-  Chroma withGreen(num value) {
-    return Color.fromARGB(alpha, red, g, blue);
+  Chroma withGreen(int value) {
+    assert(value >= 0 && value <= 255);
+    return Chroma.fromRGB(red.toDouble(), value.toDouble(), blue.toDouble(), opacity);
   }
 
   /// Returns a new color that matches this color with the blue channel replaced
-  /// with the given value.
+  /// with the given value. The value is an integer with a range from 0 to 255.
   @override
-  Chroma withBlue(num value) {
-    return Color.fromARGB(alpha, red, green, b);
+  Chroma withBlue(int value) {
+    assert(value >= 0 && value <= 255);
+    return Chroma.fromRGB(red.toDouble(), green.toDouble(), value.toDouble(), opacity);
   }
 
   /// Returns a new color that matches this color with the alpha channel replaced
-  /// with the given value.
+  /// with the given value. The value is an integer with a range from 0 to 255.
   @override
-  Chroma withAlpha(num value) {
-    return Color.fromARGB(a, red, green, blue);
+  Chroma withAlpha(int value) {
+    assert(value >= 0 && value <= 255);
+    return Chroma.fromRGB(red.toDouble(), green.toDouble(), blue.toDouble(), value / 0xFF);
   }
 
-  /// Returns a new color that matches this color with the blue channel replaced
-  /// with the given value.
+  /// Returns a new color that matches this color with the alpha channel replaced
+  /// with the given value. The value is a double with a range from 0.0 to 1.0.
   @override
   Chroma withOpacity(double value) {
-    assert(opacity >= 0.0 && opacity <= 1.0);
-    return withAlpha((255.0 * opacity).round());
-  }*/
+    assert(value >= 0.0 && value <= 1.0);
+    return Chroma.fromRGB(red.toDouble(), green.toDouble(), blue.toDouble(), value);
+  }
 
   /// Returns a new color that matches this color with the component replaced
   /// with the given value.
   ///
-  /// All values, except for the hue, are doubles between 0.0 and 1.0
-  /// The hue is a double between 0.0 and 360.0 TODO
+  /// All values, except for the hue, are doubles between 0.0 and 1.0.
+  /// The hue is a double between 0.0 and 360.0.
   Chroma withValue(String component, double value) {
     final c = List.from(components.values);
 
@@ -238,7 +250,10 @@ class Chroma extends Color {
     }
   }
 
-  /// Linearly interpolate between two colors based on the given ratio.
+  /// Linearly interpolate between [color1] and [color2] based on the given [ratio].
+  ///
+  /// You can specify the color space used for interpolation using [mode].
+  /// Available modes are: 'linear' and 'rgb'.
   Chroma lerp(Chroma color1, Chroma color2, [double ratio = 0.5, String mode = 'linear']) {
     var r1, r2, g1, g2, b1, b2, a1, a2;
     ratio = utils.clamp(ratio);
@@ -273,6 +288,7 @@ class Chroma extends Color {
     return Chroma.fromRGB(r, g, b, a);
   }
 
+  /// Returns the format of the color.
   String get format {
     if (_format == _ColorFormat.hex) {
       return 'hex';
@@ -316,11 +332,15 @@ class Chroma extends Color {
     return double.parse(((lighter + 0.05) / (darker + 0.05)).toStringAsFixed(2));
   }
 
-  /*
-  static double difference() {
-    // TODO: <https://en.wikipedia.org/wiki/color_difference>
+  /// Returns the Euclidean distance between [color1] and [color2].
+  ///
+  /// Note that this implementation uses the sRGB color space which may not
+  /// reflect real differences in human color perception.
+  static double difference(Chroma color1, Chroma color2) {
+    return math.sqrt(math.pow(color1.red   - color2.red, 2) +
+                     math.pow(color1.green - color2.green, 2) +
+                     math.pow(color1.blue  - color2.blue, 2));
   }
-  */
 
   String toCssString() {
     if (_format == _ColorFormat.hex) {

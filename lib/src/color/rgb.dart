@@ -1,4 +1,4 @@
-import '../utils.dart' show toColorValue;
+import '../utils.dart' show toColorValue, clamp;
 
 List fromRGB(double red, double green, double blue, [double alpha = 1.0]) {
   assert(red >= 0.0);
@@ -10,13 +10,18 @@ List fromRGB(double red, double green, double blue, [double alpha = 1.0]) {
   assert(alpha >= 0.0);
   assert(alpha <= 1.0);
 
+  final r = red.truncate().toInt();
+  final g = green.truncate().toInt();
+  final b = blue.truncate().toInt();
+  final a = clamp(alpha);
+
   final out = List(2)
-    ..[0] = toColorValue(red, green, blue, alpha)
+    ..[0] = toColorValue(r, g, b, a)
     ..[1] = {
-      'r': red,
-      'g': green,
-      'b': blue,
-      'a': alpha,
+      'r': r.toDouble(),
+      'g': g.toDouble(),
+      'b': b.toDouble(),
+      'a': a,
     };
 
   return out;

@@ -31,14 +31,11 @@ num checkFractional(double value) {
 num toPercentage(double value) => checkFractional(value * 100);
 
 // Returns a 32 bit value representing a color with the specified components.
-int toColorValue(double red, double green, double blue, double alpha) {
+int toColorValue(int red, int green, int blue, double alpha) {
   // See <https://developer.android.com/reference/kotlin/android/graphics/Color#encoding>
-  final r = red.round();
-  final g = green.round();
-  final b = blue.round();
   final a = (alpha * 0xFF).round();
 
-  return (a & 0xFF) << 24 | (r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF);
+  return (a & 0xFF) << 24 | (red & 0xFF) << 16 | (green & 0xFF) << 8 | (blue & 0xFF);
 }
 
 double srgbToLinear(num value) {

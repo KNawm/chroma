@@ -13,7 +13,8 @@ List fromString(String value) {
 }
 
 List fromHEX(String value) {
-  double red, green, blue, alpha;
+  int red, green, blue;
+  double alpha;
   final hexString = value.replaceFirst('#', '');
 
   if ((hexString.length != 3 &&
@@ -27,16 +28,16 @@ List fromHEX(String value) {
   alpha = 255; // Suppose it's an opaque color. If not we change this below.
 
   if (hexString.length >= 6) {
-    red = int.parse(hexString.substring(0, 2), radix: 16).toDouble();
-    green = int.parse(hexString.substring(2, 4), radix: 16).toDouble();
-    blue = int.parse(hexString.substring(4, 6), radix: 16).toDouble();
+    red = int.parse(hexString.substring(0, 2), radix: 16);
+    green = int.parse(hexString.substring(2, 4), radix: 16);
+    blue = int.parse(hexString.substring(4, 6), radix: 16);
     if (hexString.length == 8) {
       alpha = int.parse(hexString.substring(6, 8), radix: 16).toDouble();
     }
   } else {
-    red = int.parse(hexString.substring(0, 1) * 2, radix: 16).toDouble();
-    green = int.parse(hexString.substring(1, 2) * 2, radix: 16).toDouble();
-    blue = int.parse(hexString.substring(2, 3) * 2, radix: 16).toDouble();
+    red = int.parse(hexString.substring(0, 1) * 2, radix: 16);
+    green = int.parse(hexString.substring(1, 2) * 2, radix: 16);
+    blue = int.parse(hexString.substring(2, 3) * 2, radix: 16);
     if (hexString.length == 4) {
       alpha = int.parse(hexString.substring(3, 4) * 2, radix: 16).toDouble();
     }
@@ -47,9 +48,9 @@ List fromHEX(String value) {
   final out = List(2)
     ..[0] = toColorValue(red, green, blue, alpha)
     ..[1] = {
-      'r': red,
-      'g': green,
-      'b': blue,
+      'r': red.toDouble(),
+      'g': green.toDouble(),
+      'b': blue.toDouble(),
       'a': alpha,
     };
 
