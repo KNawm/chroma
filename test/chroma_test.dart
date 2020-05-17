@@ -150,9 +150,9 @@ void main() {
     });
 
     test('Grayscale', () {
-      expect(Chroma('black').grayscale(), Chroma.fromRGB(0, 0, 0));
-      expect(Chroma('white').grayscale(), Chroma.fromRGB(255, 255, 255));
       expect(Chroma('red').grayscale(), Chroma.fromRGB(127, 127, 127));
+      expect(Chroma('lime').grayscale(), Chroma.fromRGB(220, 220, 220));
+      expect(Chroma('blue').grayscale(), Chroma.fromRGB(76, 76, 76));
       expect(colorHEX.grayscale(), Chroma.fromRGB(145, 145, 145));
     });
 
@@ -170,6 +170,10 @@ void main() {
     final white = Chroma('white');
     final fuchsia = Chroma('fuchsia');
 
+    test('Random', () {
+      expect(Chroma.random(), isA<Chroma>());
+    });
+
     test('Contrast ratio', () {
       expect(Chroma.contrast(white, black), equals(21));
       expect(Chroma.contrast(black, white), equals(21));
@@ -178,8 +182,8 @@ void main() {
       expect(Chroma.contrast(white, white), equals(1));
     });
 
-    test('Random', () {
-      expect(Chroma.random(), isA<Chroma>());
+    test('Color difference', () {
+      expect(Chroma.difference(white, fuchsia), equals(255));
     });
   });
 }
