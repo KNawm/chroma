@@ -1,7 +1,7 @@
 import 'package:flutter/painting.dart' show HSVColor;
 import 'package:chroma/chroma.dart' show AngleUnit;
 
-import 'utils.dart' show convertToDegrees;
+import '../utils.dart' show convertToDegrees;
 
 List fromHWB(double hue, double whiteness, double blackness,
     [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) {

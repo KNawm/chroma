@@ -1,4 +1,4 @@
-import 'utils.dart' show toColorValue;
+import '../utils.dart' show toColorValue;
 
 List fromRGB(double red, double green, double blue, [double alpha = 1.0]) {
   assert(red >= 0.0);

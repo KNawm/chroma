@@ -1,7 +1,7 @@
 import 'dart:math' as math show pow;
 
 import 'package:chroma/src/chroma_base.dart' show AngleUnit;
-import 'package:chroma/src/color/utils.dart';
+import 'package:chroma/src/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -10,8 +10,8 @@ void main() {
       final minRGB = 0x00;
       final maxRGB = 0xFF;
 
-      expect(bound(minRGB), equals(0.0));
-      expect(bound(maxRGB), equals(1.0));
+      expect(bound(minRGB.toDouble()), equals(0.0));
+      expect(bound(maxRGB.toDouble()), equals(1.0));
       expect(bound(maxRGB / 2), equals(0.5));
     });
 
