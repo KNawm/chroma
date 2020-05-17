@@ -4,8 +4,7 @@ import 'dart:ui' show Color;
 import 'package:flutter/rendering.dart';
 
 import 'color/parser.dart' as parse;
-import 'color/utils.dart' as utils show checkFractional, toPercentage;
-import 'ops/ops.dart' as ops;
+import 'utils.dart' as utils show clamp, checkFractional, toPercentage, srgbToLinear;
 
 class Chroma extends Color {
   final _ColorFormat _format;
@@ -69,14 +68,14 @@ class Chroma extends Color {
 
   Chroma grayscale() {
     // See <https://en.wikipedia.org/wiki/Grayscale>
-    final linear = 0.2126 * (red / 0xFF) +
-        0.7152 * (green / 0xFF) +
-        0.0722 * (blue / 0xFF);
+    final linear = 0.2126 * (utils.srgbToLinear(red)   / 0xFF) +
+                   0.7152 * (utils.srgbToLinear(green) / 0xFF) +
+                   0.0722 * (utils.srgbToLinear(blue)  / 0xFF);
 
-    // Gamma correction
-    final srgb = linear > 0.0031308
-        ? (1.055 * math.pow(linear, 1 / 2.4) - 0.055) * 0xFF
-        : 12.92 * linear * 0xFF;
+    // Gamma compression
+    final srgb = linear <= 0.0031308
+        ? 12.92 * linear * 0xFF
+        : (1.055 * math.pow(linear, 1 / 2.4) - 0.055) * 0xFF;
 
     // TODO: maybe don't explicitly change the color model
     return Chroma.fromRGB(srgb, srgb, srgb, opacity);
@@ -239,18 +238,39 @@ class Chroma extends Color {
     }
   }
 
-  Chroma lerp(Chroma color1, Chroma color2, [double ratio = 0.5]) {
-    /*if (_colorFormat == _Formats.HEX) {
-      return 'hex';
-    } else if (_colorFormat == _Formats.RGB) {
-      return 'rgb';
-    } else if (_colorFormat == _Formats.HSL) {
-      return 'hsl';
-    } else if (_colorFormat == _Formats.HSV) {
-      return 'hsv';
-    } else if (_colorFormat == _Formats.HWB) {
-      return 'hwb';
-    }*/
+  /// Linearly interpolate between two colors based on the given ratio.
+  Chroma lerp(Chroma color1, Chroma color2, [double ratio = 0.5, String mode = 'linear']) {
+    var r1, r2, g1, g2, b1, b2, a1, a2;
+    ratio = utils.clamp(ratio);
+
+    if (mode == 'linear') {
+      r1 = utils.srgbToLinear(color1.red);
+      r2 = utils.srgbToLinear(color2.red);
+      g1 = utils.srgbToLinear(color1.green);
+      g2 = utils.srgbToLinear(color2.green);
+      b1 = utils.srgbToLinear(color1.blue);
+      b2 = utils.srgbToLinear(color2.blue);
+      a1 = utils.srgbToLinear(color1.alpha);
+      a2 = utils.srgbToLinear(color2.alpha);
+    } else if (mode == 'rgb') {
+      r1 = color1.red;
+      r2 = color2.red;
+      g1 = color1.green;
+      g2 = color2.green;
+      b1 = color1.blue;
+      b2 = color2.blue;
+      a1 = color1.alpha;
+      a2 = color2.alpha;
+    } else {
+      throw ArgumentError.value(mode, mode);
+    }
+
+    final r = r1 * (1 - ratio) + r2 * ratio;
+    final g = g1 * (1 - ratio) + g2 * ratio;
+    final b = b1 * (1 - ratio) + b2 * ratio;
+    final a = a1 * (1 - ratio) + a2 * ratio;
+
+    return Chroma.fromRGB(r, g, b, a);
   }
 
   String get format {
@@ -293,8 +313,7 @@ class Chroma extends Color {
     }
 
     // See <https://www.w3.org/TR/WCAG21/#dfn-contrast-ratio>
-    return double.parse(
-        ((lighter + 0.05) / (darker + 0.05)).toStringAsFixed(2));
+    return double.parse(((lighter + 0.05) / (darker + 0.05)).toStringAsFixed(2));
   }
 
   /*
