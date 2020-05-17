@@ -4,7 +4,7 @@ import 'dart:ui' show Color;
 import 'package:flutter/rendering.dart';
 
 import 'color/parser.dart' as parse;
-import 'utils.dart' as utils show clamp, checkFractional, toPercentage, srgbToLinear, linearToSrgb;
+import 'utils.dart' as utils;
 
 class Chroma extends Color {
   final _ColorFormat _format;
@@ -15,9 +15,10 @@ class Chroma extends Color {
         _components = color[1],
         super(color[0]);
 
-  /// Creates a color by specifying red, green, blue and alpha as components.
+  /// Creates a color by specifying a 3, 4, 6 and 8-digit hexadecimal string or
+  /// you can use any of the 148 named CSS colors by specifying its color keyword.
   factory Chroma(String value) {
-    return Chroma._(parse.fromString(value), _ColorFormat.hex);
+    return Chroma._(parse.fromString(value), _ColorFormat.rgb);
   }
 
   /// Creates a color by specifying [red], [green], [blue] and [alpha] as components.
@@ -78,9 +79,7 @@ class Chroma extends Color {
 
   /// Returns the format of the color.
   String get format {
-    if (_format == _ColorFormat.hex) {
-      return 'hex';
-    } else if (_format == _ColorFormat.rgb) {
+    if (_format == _ColorFormat.rgb) {
       return 'rgb';
     } else if (_format == _ColorFormat.hsl) {
       return 'hsl';
@@ -153,7 +152,7 @@ class Chroma extends Color {
     final c = List.from(components.values);
     component = component.toLowerCase();
 
-    if (_format == _ColorFormat.hex || _format == _ColorFormat.rgb) {
+    if (_format == _ColorFormat.rgb) {
       if (component == 'r' || component == 'red') {
         return Chroma.fromRGB(value * 0xFF, c[1], c[2], c[3]);
       } else if (component == 'g' || component == 'green') {
@@ -170,7 +169,7 @@ class Chroma extends Color {
         return Chroma.fromHSL(c[0], value, c[2], c[3]);
       } else if (component == 'l' || component == 'lightness') {
         return Chroma.fromHSL(c[0], c[1], value, c[3]);
-      } else if (component == 'a' ||  component == 'alpha') {
+      } else if (component == 'a' || component == 'alpha') {
         return Chroma.fromHSL(c[0], c[1], c[2], value);
       }
     } else if (_format == _ColorFormat.hsv) {
@@ -272,53 +271,48 @@ class Chroma extends Color {
                      math.pow(color1.blue  - color2.blue, 2));
   }
 
-  String toCssString() {
-    if (_format == _ColorFormat.hex) {
+  /// Returns a color with CSS syntax as a string.
+  ///
+  /// Specify [format] 'hex' to return a HEX string.
+  String toCssString({String format}) {
+    if (format == 'hex') {
       // TODO: support short hex output whenever possible
-      var hexString = red.toRadixString(16).padLeft(2, '0') +
-          green.toRadixString(16).padLeft(2, '0') +
-          blue.toRadixString(16).padLeft(2, '0');
+      var hexString = value.toRadixString(16).padLeft(8, '0').substring(2);
+
       if (alpha != 0xFF) {
         hexString += alpha.toRadixString(16).padLeft(2, '0');
       }
+
       return '#$hexString';
     } else if (_format == _ColorFormat.rgb) {
       final a = components.values.elementAt(3);
+
       return alpha != 0xFF
           ? 'rgba($red, $green, $blue, $a)'
           : 'rgb($red, $green, $blue)';
-    } else if (_format == _ColorFormat.hsl) {
+    } else {
       final h = utils.checkFractional(components.values.elementAt(0));
-      final s = utils.toPercentage(components.values.elementAt(1));
-      final l = utils.toPercentage(components.values.elementAt(2));
+      final x = utils.toPercentage(components.values.elementAt(1));
+      final y = utils.toPercentage(components.values.elementAt(2));
       final a = components.values.elementAt(3);
-      return alpha != 0xFF ? 'hsla($h, $s%, $l%, $a)' : 'hsl($h, $s%, $l%)';
-    } else if (_format == _ColorFormat.hsv) {
-      final h = utils.checkFractional(components.values.elementAt(0));
-      final s = utils.toPercentage(components.values.elementAt(1));
-      final v = utils.toPercentage(components.values.elementAt(2));
-      final a = components.values.elementAt(3);
-      return alpha != 0xFF ? 'hsv($h, $s%, $v%, $a)' : 'hsv($h, $s%, $v%)';
-    } else if (_format == _ColorFormat.hwb) {
-      final h = utils.checkFractional(components.values.elementAt(0));
-      final w = utils.toPercentage(components.values.elementAt(1));
-      final b = utils.toPercentage(components.values.elementAt(2));
-      final a = components.values.elementAt(3);
-      return alpha != 0xFF ? 'hwb($h, $w%, $b%, $a)' : 'hwb($h, $w%, $b%)';
+
+      if (_format == _ColorFormat.hsl) {
+        return alpha != 0xFF ? 'hsla($h, $x%, $y%, $a)' : 'hsl($h, $x%, $y%)';
+      } else if (_format == _ColorFormat.hsv) {
+        return alpha != 0xFF ? 'hsv($h, $x%, $y%, $a)' : 'hsv($h, $x%, $y%)';
+      } else if (_format == _ColorFormat.hwb) {
+        return alpha != 0xFF ? 'hwb($h, $x%, $y%, $a)' : 'hwb($h, $x%, $y%)';
+      }
     }
   }
 
   @override
   String toString() {
-    var hex = value.toRadixString(16).padLeft(8, '0').substring(2);
+    final hex = toCssString(format: 'hex');
 
-    if (alpha != 0xFF) {
-      hex += alpha.toRadixString(16).padLeft(2, '0');
-    }
-
-    return 'Chroma(\'#$hex\')';
+    return 'Chroma(\'$hex\')';
   }
 }
 
-enum _ColorFormat { hex, rgb, hsl, hsv, hwb }
+enum _ColorFormat { rgb, hsl, hsv, hwb }
 enum AngleUnit { deg, grad, rad, turn }
