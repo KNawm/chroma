@@ -274,7 +274,7 @@ class Chroma extends Color {
   /// Returns a color with CSS syntax as a string.
   ///
   /// Specify [format] 'hex' to return a HEX string.
-  String toCssString({String format}) {
+  String toCss([String format]) {
     if (format == 'hex') {
       // TODO: support short hex output whenever possible
       var hexString = value.toRadixString(16).padLeft(8, '0').substring(2);
@@ -308,7 +308,7 @@ class Chroma extends Color {
 
   @override
   String toString() {
-    final hex = toCssString(format: 'hex');
+    final hex = toCss('hex');
 
     return 'Chroma(\'$hex\')';
   }

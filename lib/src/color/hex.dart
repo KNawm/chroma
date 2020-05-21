@@ -1,5 +1,5 @@
-import 'named_colors.dart';
 import '../utils.dart' show bound, toColorValue;
+import 'named_colors.dart';
 
 bool _isAsciiHexDigit(int c) =>
     (c >= 97 && c <= 102) || (c >= 65 && c <= 70) || (c >= 48 && c <= 57);
