@@ -120,7 +120,11 @@ class Chroma extends Color {
   /// The hue is a double between 0 and 360.
   List<double> get components {
     if (_format == 'rgb') {
-      return [_components[0] * 0xFF, _components[1] * 0xFF, _components[2] * 0xFF, _components[3]];
+      return List(4)
+        ..[0] = _components[0] * 0xFF
+        ..[1] = _components[1] * 0xFF
+        ..[2] = _components[2] * 0xFF
+        ..[3] = _components[3];
     }
 
     return _components;
