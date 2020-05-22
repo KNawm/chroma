@@ -164,11 +164,11 @@ void main() {
       expect(colorHSV.components, [300, 1, 1, 1]);
       expect(colorHWB.components, [300, 0, 0, 1]);
 
-      expect(colorHEX.toCss('hex'), '#ff00ff');
-      expect(colorRGB.toCss(), 'rgb(255, 0, 255)');
-      expect(colorHSL.toCss(), 'hsl(300, 100%, 50%)');
-      expect(colorHSV.toCss(), 'hsv(300, 100%, 100%)');
-      expect(colorHWB.toCss(), 'hwb(300, 0%, 0%)');
+      expect(colorHEX.toCSS('hex'), '#ff00ff');
+      expect(colorRGB.toCSS(), 'rgb(255, 0, 255)');
+      expect(colorHSL.toCSS(), 'hsl(300, 100%, 50%)');
+      expect(colorHSV.toCSS(), 'hsv(300, 100%, 100%)');
+      expect(colorHWB.toCSS(), 'hwb(300, 0%, 0%)');
 
       expect(colorHEX.toString(), 'Chroma(\'#ff00ff\')');
       expect(colorRGB.toString(), 'Chroma(\'#ff00ff\')');
@@ -176,8 +176,8 @@ void main() {
       expect(colorHSV.toString(), 'Chroma(\'#ff00ff\')');
       expect(colorHWB.toString(), 'Chroma(\'#ff00ff\')');
 
-      expect(Chroma('ccccccc5').toCss('hex'), '#ccccccc5');
-      expect(Chroma.fromRGB(0, 0, 255, .5).toCss(), 'rgba(0, 0, 255, 0.5)');
+      expect(Chroma('ccccccc5').toCSS('hex'), '#ccccccc5');
+      expect(Chroma.fromRGB(0, 0, 255, .5).toCSS(), 'rgba(0, 0, 255, 0.5)');
 
       expect(Chroma('ccccccc5').toString(), 'Chroma(\'#ccccccc5\')');
       expect(Chroma.fromRGB(0, 0, 255, .5).toString(), 'Chroma(\'#0000ff80\')');
