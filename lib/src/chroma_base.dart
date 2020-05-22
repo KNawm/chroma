@@ -136,14 +136,14 @@ class Chroma extends Color {
   /// Returns the format of the color.
   String get format => _format;
 
-  Chroma grayscale() {
+  Chroma get grayscale {
     // See <https://en.wikipedia.org/wiki/Grayscale>
     final linear = 0.2126 * (utils.srgbToLinear(red   / 0xFF)) +
                    0.7152 * (utils.srgbToLinear(green / 0xFF)) +
                    0.0722 * (utils.srgbToLinear(blue  / 0xFF));
 
     // Gamma compression
-    var srgb = (utils.linearToSrgb(linear) * 0xFF).roundToDouble();
+    final srgb = (utils.linearToSrgb(linear) * 0xFF).roundToDouble();
 
     // TODO: maybe don't implicitly change the color model
     return Chroma.fromRGB(srgb, srgb, srgb, opacity);

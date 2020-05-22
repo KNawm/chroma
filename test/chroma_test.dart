@@ -184,10 +184,10 @@ void main() {
     });
 
     test('Grayscale', () {
-      expect(Chroma('red').grayscale(), Chroma.fromRGB(127, 127, 127));
-      expect(Chroma('lime').grayscale(), Chroma.fromRGB(220, 220, 220));
-      expect(Chroma('blue').grayscale(), Chroma.fromRGB(76, 76, 76));
-      expect(colorHEX.grayscale(), Chroma.fromRGB(145, 145, 145));
+      expect(Chroma('red').grayscale, Chroma.fromRGB(127, 127, 127));
+      expect(Chroma('lime').grayscale, Chroma.fromRGB(220, 220, 220));
+      expect(Chroma('blue').grayscale, Chroma.fromRGB(76, 76, 76));
+      expect(colorHEX.grayscale, Chroma.fromRGB(145, 145, 145));
     });
 
     test('Equality', () {
