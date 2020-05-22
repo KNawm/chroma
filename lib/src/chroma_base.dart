@@ -113,6 +113,26 @@ class Chroma extends Color {
     return Chroma._(color[0], color[1], color[2]);
   }
 
+  /// Creates a color by specifying [x], [y], [z] and [opacity] as components.
+  ///
+  /// All components are doubles between 0.0 and 1.0.
+  ///
+  /// An [opacity] value of 1.0 is completely opaque, and 0.0 is completely transparent.
+  factory Chroma.fromXYZ(double x, double y, double z, [double opacity = 1.0]) {
+    assert(x >= 0.0);
+    assert(x <= 1.0);
+    assert(y >= 0.0);
+    assert(y <= 1.0);
+    assert(z >= 0.0);
+    assert(z <= 1.0);
+    assert(opacity >= 0.0);
+    assert(opacity <= 1.0);
+
+    final color = parse.fromXYZ(x, y, z, opacity);
+
+    return Chroma._(color[0], color[1], color[2]);
+  }
+
   /// Returns the values of the 4 components of the color, which components are
   /// present depends on the color model.
   ///
@@ -239,6 +259,16 @@ class Chroma extends Color {
       } else if (component == 'a' || component == 'alpha') {
         return Chroma.fromHWB(c[0], c[1], c[2], value);
       }
+    } else if (_format == 'xyz') {
+      if (component == 'x') {
+        return Chroma.fromXYZ(value, c[1], c[2], c[3]);
+      } else if (component == 'y') {
+        return Chroma.fromXYZ(c[0], value, c[2], c[3]);
+      } else if (component == 'z') {
+        return Chroma.fromXYZ(c[0], c[1], value, c[3]);
+      } else if (component == 'a' || component == 'alpha') {
+        return Chroma.fromXYZ(c[0], c[1], c[2], value);
+      }
     }
 
     throw ArgumentError.value(component, 'component');
@@ -337,7 +367,7 @@ class Chroma extends Color {
       return alpha != 0xFF
           ? 'rgba($red, $green, $blue, $a)'
           : 'rgb($red, $green, $blue)';
-    } else {
+    } else if (_format == 'hsl' || _format == 'hsv' || _format == 'hwb') {
       final h = utils.checkFractional(components.elementAt(0));
       final x = utils.toPercentage(components.elementAt(1));
       final y = utils.toPercentage(components.elementAt(2));
@@ -351,6 +381,8 @@ class Chroma extends Color {
         return alpha != 0xFF ? 'hwb($h, $x%, $y%, $a)' : 'hwb($h, $x%, $y%)';
       }
     }
+    
+    throw UnsupportedError("CSS doesn't support this color model.");
   }
 
   @override
