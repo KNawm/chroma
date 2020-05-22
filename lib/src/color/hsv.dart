@@ -1,27 +1,21 @@
 import 'package:flutter/painting.dart' show HSVColor;
 import 'package:chroma/chroma.dart' show AngleUnit;
+import 'package:chroma/src/utils.dart' show convertToDegrees;
 
-import '../utils.dart' show convertToDegrees;
+List fromHSV(double h, double s, double v,
+    [double a = 1.0, AngleUnit angleUnit = AngleUnit.deg]) {
+  h = convertToDegrees(h, angleUnit);
 
-List fromHSV(double hue, double saturation, double value,
-    [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) {
-  assert(saturation >= 0.0);
-  assert(saturation <= 1.0);
-  assert(value >= 0.0);
-  assert(value <= 1.0);
-  assert(alpha >= 0.0);
-  assert(alpha <= 1.0);
+  final components = List<double>(4)
+    ..[0] = h
+    ..[1] = s
+    ..[2] = v
+    ..[3] = a;
+  final format = 'hsv';
+  final value = HSVColor.fromAHSV(a, h, s, v).toColor().value;
 
-  hue = convertToDegrees(hue, angleUnit);
-
-  final out = List(2)
-    ..[0] = HSVColor.fromAHSV(alpha, hue, saturation, value).toColor().value
-    ..[1] = {
-      'h': hue,
-      's': saturation,
-      'v': value,
-      'a': alpha,
-    };
-
-  return out;
+  return List(3)
+    ..[0] = components
+    ..[1] = format
+    ..[2] = value;
 }

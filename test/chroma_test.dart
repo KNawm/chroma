@@ -131,9 +131,9 @@ void main() {
       expect(colorHWB.withOpacity(0.5), equals(Chroma.fromRGB(255, 0, 255, .5)));
 
       expect(colorRGB.withValue('RED', 0), equals(Chroma('blue')));
-      expect(colorRGB.withValue('G', 1), equals(Chroma('white')));
+      expect(colorRGB.withValue('G', 255), equals(Chroma('white')));
       expect(colorRGB.withValue('blue', 0), equals(Chroma('red')));
-      expect(colorRGB.withValue('a', 0.5), equals(Chroma.fromRGB(255, 0, 255, .5)));
+      expect(colorRGB.withValue('a', .5), equals(Chroma.fromRGB(255, 0, 255, .5)));
 
       expect(colorHSL.withValue('HUE', 0), equals(Chroma('red')));
       expect(colorHSL.withValue('S', .5), equals(Chroma('#bf40bf')));
@@ -158,11 +158,11 @@ void main() {
     });
 
     test('Components', () {
-      expect(colorHEX.components, {'r': 255, 'g': 0, 'b': 255, 'a': 1});
-      expect(colorRGB.components, {'r': 255, 'g': 0, 'b': 255, 'a': 1});
-      expect(colorHSL.components, {'h': 300, 's': 1, 'l': .5, 'a': 1});
-      expect(colorHSV.components, {'h': 300, 's': 1, 'v': 1, 'a': 1});
-      expect(colorHWB.components, {'h': 300, 'w': 0, 'b': 0, 'a': 1});
+      expect(colorHEX.components, [255, 0, 255, 1]);
+      expect(colorRGB.components, [255, 0, 255, 1]);
+      expect(colorHSL.components, [300, 1, .5, 1]);
+      expect(colorHSV.components, [300, 1, 1, 1]);
+      expect(colorHWB.components, [300, 0, 0, 1]);
 
       expect(colorHEX.toCss('hex'), '#ff00ff');
       expect(colorRGB.toCss(), 'rgb(255, 0, 255)');
@@ -211,8 +211,8 @@ void main() {
     });
 
     test('Lerp', () {
-      expect(Chroma.lerp(white, black), equals(Chroma('#bbbbbb')));
-      expect(Chroma.lerp(red, blue), equals(Chroma('#bb00bb')));
+      expect(Chroma.lerp(white, black), equals(Chroma('#bcbcbc')));
+      expect(Chroma.lerp(red, blue), equals(Chroma('#bc00bc')));
       expect(Chroma.lerp(white, black, .5, 'rgb'), equals(Chroma('gray')));
       expect(Chroma.lerp(red, blue, .5, 'rgb'), equals(Chroma('#800080')));
       expect(() => Chroma.lerp(white, black, 1, 'null'), throwsArgumentError);

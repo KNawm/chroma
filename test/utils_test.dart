@@ -54,8 +54,8 @@ void main() {
     test('toColorValue()', () {
       final max = math.pow(16, 8) - 1;
 
-      expect(toColorValue(255, 255, 255, 1), equals(max));
-      expect(toColorValue(128, 128, 128, 0.5).toRadixString(16), '80808080');
+      expect(toColorValue(1, 1, 1, 1), equals(max));
+      expect(toColorValue(0.5, 0.5, 0.5, 0.5).toRadixString(16), '80808080');
     });
 
     test('srgbToLinear()', () {

@@ -7,88 +7,130 @@ import 'color/parser.dart' as parse;
 import 'utils.dart' as utils;
 
 class Chroma extends Color {
-  final _ColorFormat _format;
-  final Map<String, double> _components;
+  final List<double> _components;
+  final String _format;
 
-  Chroma._(List color, _ColorFormat format)
-      : _format = format,
-        _components = color[1],
-        super(color[0]);
+  const Chroma._(List<double> components, String format, int value)
+      : _components = components,
+        _format = format,
+        super(value);
 
   /// Creates a color by specifying a 3, 4, 6 and 8-digit hexadecimal string or
   /// you can use any of the 148 named CSS colors by specifying its color keyword.
   factory Chroma(String value) {
-    return Chroma._(parse.fromString(value), _ColorFormat.rgb);
+    assert(value.isNotEmpty);
+
+    if (parse.containsNamed(value)) {
+      value = parse.fromNamed(value);
+    }
+
+    final color = parse.fromHEX(value);
+
+    return Chroma._(color[0], color[1], color[2]);
   }
 
-  /// Creates a color by specifying [red], [green], [blue] and [alpha] as components.
+  /// Creates a color by specifying [red], [green], [blue] and [opacity] as components.
   ///
-  /// All components, except for the [alpha], are doubles between 0 and 255.
-  /// The [alpha] is a double between 0.0 and 1.0.
+  /// All components, except for the [opacity], are doubles between 0 and 255.
+  /// [opacity] is the alpha channel as a double between 0.0 and 1.0.
   ///
-  /// An [alpha] value of 1.0 is completely opaque, and 0.0 is completely transparent.
-  factory Chroma.fromRGB(double red, double green, double blue,
-          [double alpha = 1.0]) =>
-      Chroma._(parse.fromRGB(red, green, blue, alpha), _ColorFormat.rgb);
+  /// An [opacity] value of 1.0 is completely opaque, and 0.0 is completely transparent.
+  factory Chroma.fromRGB(double red, double green, double blue, [double opacity = 1.0]) {
+    assert(red >= 0.0);
+    assert(red <= 255.0);
+    assert(green >= 0.0);
+    assert(green <= 255.0);
+    assert(blue >= 0.0);
+    assert(blue <= 255.0);
+    assert(opacity >= 0.0);
+    assert(opacity <= 1.0);
 
-  /// Creates a color by specifying [hue], [saturation], [lightness] and [alpha] as components.
+    final color = parse.fromRGB(red, green, blue, opacity);
+
+    return Chroma._(color[0], color[1], color[2]);
+  }
+
+  /// Creates a color by specifying [hue], [saturation], [lightness] and [opacity] as components.
   ///
   /// All components, except for the [hue], are doubles between 0.0 and 1.0.
   /// The [hue] is a double without range as you can specify the angular unit of
   /// your preference using [angleUnit].
   ///
-  /// An [alpha] value of 1.0 is completely opaque, and 0.0 is completely transparent.
+  /// An [opacity] value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma.fromHSL(double hue, double saturation, double lightness,
-          [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) =>
-      Chroma._(parse.fromHSL(hue, saturation, lightness, alpha, angleUnit),
-          _ColorFormat.hsl);
+          [double opacity = 1.0, AngleUnit angleUnit = AngleUnit.deg]) {
+    assert(saturation >= 0.0);
+    assert(saturation <= 1.0);
+    assert(lightness >= 0.0);
+    assert(lightness <= 1.0);
+    assert(opacity >= 0.0);
+    assert(opacity <= 1.0);
 
-  /// Creates a color by specifying [hue], [saturation], [value] and [alpha] as components.
+    final color = parse.fromHSL(hue, saturation, lightness, opacity, angleUnit);
+
+    return Chroma._(color[0], color[1], color[2]);
+  }
+
+  /// Creates a color by specifying [hue], [saturation], [value] and [opacity] as components.
   ///
   /// All components, except for the [hue], are doubles between 0.0 and 1.0.
   /// The [hue] is a double without range as you can specify the angular unit of
   /// your preference using [angleUnit].
   ///
-  /// An [alpha] value of 1.0 is completely opaque, and 0.0 is completely transparent.
+  /// An [opacity] value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma.fromHSV(double hue, double saturation, double value,
-          [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) =>
-      Chroma._(parse.fromHSV(hue, saturation, value, alpha, angleUnit),
-          _ColorFormat.hsv);
+          [double opacity = 1.0, AngleUnit angleUnit = AngleUnit.deg]) {
+    assert(saturation >= 0.0);
+    assert(saturation <= 1.0);
+    assert(value >= 0.0);
+    assert(value <= 1.0);
+    assert(opacity >= 0.0);
+    assert(opacity <= 1.0);
 
-  /// Creates a color by specifying [hue], [whiteness], [blackness] and [alpha] as components.
+    final color = parse.fromHSV(hue, saturation, value, opacity, angleUnit);
+
+    return Chroma._(color[0], color[1], color[2]);
+  }
+
+  /// Creates a color by specifying [hue], [whiteness], [blackness] and [opacity] as components.
   ///
   /// All components, except for the [hue], are doubles between 0.0 and 1.0.
   /// The [hue] is a double without range as you can specify the angular unit of
   /// your preference using [angleUnit].
   ///
-  /// An [alpha] value of 1.0 is completely opaque, and 0.0 is completely transparent.
+  /// An [opacity] value of 1.0 is completely opaque, and 0.0 is completely transparent.
   factory Chroma.fromHWB(double hue, double whiteness, double blackness,
-          [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) =>
-      Chroma._(parse.fromHWB(hue, whiteness, blackness, alpha, angleUnit),
-          _ColorFormat.hwb);
+          [double opacity = 1.0, AngleUnit angleUnit = AngleUnit.deg]) {
+    assert(whiteness >= 0.0);
+    assert(whiteness <= 1.0);
+    assert(blackness >= 0.0);
+    assert(blackness <= 1.0);
+    assert(opacity >= 0.0);
+    assert(opacity <= 1.0);
+
+    final color = parse.fromHWB(hue, whiteness, blackness, opacity, angleUnit);
+
+    return Chroma._(color[0], color[1], color[2]);
+  }
 
   /// Returns the values of the 4 components of the color, which components are
   /// present depends on the color model.
   ///
   /// All values, except for the hue, are doubles between 0.0 and 1.0.
-  /// The hue is a double between 0.0 and 360.0.
-  Map<String, double> get components => _components;
+  /// The hue is a double between 0 and 360.
+  List<double> get components {
+    if (_format == 'rgb') {
+      return [_components[0] * 0xFF, _components[1] * 0xFF, _components[2] * 0xFF, _components[3]];
+    }
+
+    return _components;
+  }
 
   @override
-  double get opacity => components.values.elementAt(3);
+  double get opacity => components.elementAt(3);
 
   /// Returns the format of the color.
-  String get format {
-    if (_format == _ColorFormat.rgb) {
-      return 'rgb';
-    } else if (_format == _ColorFormat.hsl) {
-      return 'hsl';
-    } else if (_format == _ColorFormat.hsv) {
-      return 'hsv';
-    } else if (_format == _ColorFormat.hwb) {
-      return 'hwb';
-    }
-  }
+  String get format => _format;
 
   Chroma grayscale() {
     // See <https://en.wikipedia.org/wiki/Grayscale>
@@ -101,6 +143,22 @@ class Chroma extends Color {
 
     // TODO: maybe don't implicitly change the color model
     return Chroma.fromRGB(srgb, srgb, srgb, opacity);
+  }
+
+  /// Returns a new color that matches this color with the alpha channel replaced
+  /// with the given value. The value is an integer with a range from 0 to 255.
+  @override
+  Chroma withAlpha(int value) {
+    assert(value >= 0 && value <= 255);
+    return Chroma.fromRGB(red.toDouble(), green.toDouble(), blue.toDouble(), value / 0xFF);
+  }
+
+  /// Returns a new color that matches this color with the alpha channel replaced
+  /// with the given value. The value is a double with a range from 0.0 to 1.0.
+  @override
+  Chroma withOpacity(double value) {
+    assert(value >= 0.0 && value <= 1.0);
+    return Chroma.fromRGB(red.toDouble(), green.toDouble(), blue.toDouble(), value);
   }
 
   /// Returns a new color that matches this color with the red channel replaced
@@ -127,42 +185,27 @@ class Chroma extends Color {
     return Chroma.fromRGB(red.toDouble(), green.toDouble(), value.toDouble(), opacity);
   }
 
-  /// Returns a new color that matches this color with the alpha channel replaced
-  /// with the given value. The value is an integer with a range from 0 to 255.
-  @override
-  Chroma withAlpha(int value) {
-    assert(value >= 0 && value <= 255);
-    return Chroma.fromRGB(red.toDouble(), green.toDouble(), blue.toDouble(), value / 0xFF);
-  }
-
-  /// Returns a new color that matches this color with the alpha channel replaced
-  /// with the given value. The value is a double with a range from 0.0 to 1.0.
-  @override
-  Chroma withOpacity(double value) {
-    assert(value >= 0.0 && value <= 1.0);
-    return Chroma.fromRGB(red.toDouble(), green.toDouble(), blue.toDouble(), value);
-  }
-
   /// Returns a new color that matches this color with the component replaced
   /// with the given value.
   ///
-  /// All values, except for the hue, are doubles between 0.0 and 1.0.
-  /// The hue is a double between 0.0 and 360.0.
+  /// Red, green and blue values are doubles between 0 and 255.
+  /// All other values, except for the hue, are doubles between 0.0 and 1.0.
+  /// The hue is a double between 0 and 360.
   Chroma withValue(String component, double value) {
-    final c = List.from(components.values);
     component = component.toLowerCase();
+    final c = components;
 
-    if (_format == _ColorFormat.rgb) {
+    if (_format == 'rgb') {
       if (component == 'r' || component == 'red') {
-        return Chroma.fromRGB(value * 0xFF, c[1], c[2], c[3]);
+        return Chroma.fromRGB(value, green.toDouble(), blue.toDouble(), opacity);
       } else if (component == 'g' || component == 'green') {
-        return Chroma.fromRGB(c[0], value * 0xFF, c[2], c[3]);
+        return Chroma.fromRGB(red.toDouble(), value, blue.toDouble(), opacity);
       } else if (component == 'b' || component == 'blue') {
-        return Chroma.fromRGB(c[0], c[1], value * 0xFF, c[3]);
+        return Chroma.fromRGB(red.toDouble(), green.toDouble(), value, opacity);
       } else if (component == 'a' || component == 'alpha') {
-        return Chroma.fromRGB(c[0], c[1], c[2], value);
+        return Chroma.fromRGB(red.toDouble(), green.toDouble(), blue.toDouble(), value);
       }
-    } else if (_format == _ColorFormat.hsl) {
+    } else if (_format == 'hsl') {
       if (component == 'h' || component == 'hue') {
         return Chroma.fromHSL(value, c[1], c[2], c[3]);
       } else if (component == 's' || component == 'saturation') {
@@ -172,7 +215,7 @@ class Chroma extends Color {
       } else if (component == 'a' || component == 'alpha') {
         return Chroma.fromHSL(c[0], c[1], c[2], value);
       }
-    } else if (_format == _ColorFormat.hsv) {
+    } else if (_format == 'hsv') {
       if (component == 'h' || component == 'hue') {
         return Chroma.fromHSV(value, c[1], c[2], c[3]);
       } else if (component == 's' || component == 'saturation') {
@@ -182,7 +225,7 @@ class Chroma extends Color {
       } else if (component == 'a' || component == 'alpha') {
         return Chroma.fromHSV(c[0], c[1], c[2], value);
       }
-    } else if (_format == _ColorFormat.hwb) {
+    } else if (_format == 'hwb') {
       if (component == 'h' || component == 'hue') {
         return Chroma.fromHWB(value, c[1], c[2], c[3]);
       } else if (component == 'w' || component == 'whiteness') {
@@ -221,9 +264,9 @@ class Chroma extends Color {
 
       return Chroma.fromRGB(r, g, b, a);
     } else if (mode == 'rgb') {
-      final r = (color1.red    * (1 - ratio) + color2.red * ratio).roundToDouble();
-      final g = (color1.green  * (1 - ratio) + color2.green * ratio).roundToDouble();
-      final b = (color1.blue   * (1 - ratio) + color2.blue * ratio).roundToDouble();
+      final r = (color1.red    * (1 - ratio) + color2.red * ratio).toDouble();
+      final g = (color1.green  * (1 - ratio) + color2.green * ratio).toDouble();
+      final b = (color1.blue   * (1 - ratio) + color2.blue * ratio).toDouble();
       final a = color1.opacity * (1 - ratio) + color2.opacity * ratio;
 
       return Chroma.fromRGB(r, g, b, a);
@@ -284,23 +327,23 @@ class Chroma extends Color {
       }
 
       return '#$hexString';
-    } else if (_format == _ColorFormat.rgb) {
-      final a = components.values.elementAt(3);
+    } else if (_format == 'rgb') {
+      final a = components.elementAt(3);
 
       return alpha != 0xFF
           ? 'rgba($red, $green, $blue, $a)'
           : 'rgb($red, $green, $blue)';
     } else {
-      final h = utils.checkFractional(components.values.elementAt(0));
-      final x = utils.toPercentage(components.values.elementAt(1));
-      final y = utils.toPercentage(components.values.elementAt(2));
-      final a = components.values.elementAt(3);
+      final h = utils.checkFractional(components.elementAt(0));
+      final x = utils.toPercentage(components.elementAt(1));
+      final y = utils.toPercentage(components.elementAt(2));
+      final a = components.elementAt(3);
 
-      if (_format == _ColorFormat.hsl) {
+      if (_format == 'hsl') {
         return alpha != 0xFF ? 'hsla($h, $x%, $y%, $a)' : 'hsl($h, $x%, $y%)';
-      } else if (_format == _ColorFormat.hsv) {
+      } else if (_format == 'hsv') {
         return alpha != 0xFF ? 'hsv($h, $x%, $y%, $a)' : 'hsv($h, $x%, $y%)';
-      } else if (_format == _ColorFormat.hwb) {
+      } else if (_format == 'hwb') {
         return alpha != 0xFF ? 'hwb($h, $x%, $y%, $a)' : 'hwb($h, $x%, $y%)';
       }
     }
@@ -314,5 +357,4 @@ class Chroma extends Color {
   }
 }
 
-enum _ColorFormat { rgb, hsl, hsv, hwb }
 enum AngleUnit { deg, grad, rad, turn }

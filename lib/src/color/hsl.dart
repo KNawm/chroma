@@ -1,27 +1,21 @@
 import 'package:flutter/painting.dart' show HSLColor;
 import 'package:chroma/chroma.dart' show AngleUnit;
-
-import '../utils.dart' show convertToDegrees;
+import 'package:chroma/src/utils.dart' show convertToDegrees;
 
 List fromHSL(double hue, double saturation, double lightness,
     [double alpha = 1.0, AngleUnit angleUnit = AngleUnit.deg]) {
-  assert(saturation >= 0.0);
-  assert(saturation <= 1.0);
-  assert(lightness >= 0.0);
-  assert(lightness <= 1.0);
-  assert(alpha >= 0.0);
-  assert(alpha <= 1.0);
-
   hue = convertToDegrees(hue, angleUnit);
 
-  final out = List(2)
-    ..[0] = HSLColor.fromAHSL(alpha, hue, saturation, lightness).toColor().value
-    ..[1] = {
-      'h': hue,
-      's': saturation,
-      'l': lightness,
-      'a': alpha,
-    };
+  final components = List<double>(4)
+    ..[0] = hue
+    ..[1] = saturation
+    ..[2] = lightness
+    ..[3] = alpha;
+  final format = 'hsl';
+  final value = HSLColor.fromAHSL(alpha, hue, saturation, lightness).toColor().value;
 
-  return out;
+  return List(3)
+    ..[0] = components
+    ..[1] = format
+    ..[2] = value;
 }
