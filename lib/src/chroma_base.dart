@@ -3,7 +3,7 @@ import 'dart:ui' show Color;
 
 import 'package:flutter/rendering.dart';
 
-import 'color/parser.dart' as parse;
+import 'parser.dart' as parse;
 import 'utils.dart' as utils;
 
 class Chroma extends Color {
