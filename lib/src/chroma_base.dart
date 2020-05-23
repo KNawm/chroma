@@ -133,6 +133,21 @@ class Chroma extends Color {
     return Chroma._(color[0], color[1], color[2]);
   }
 
+  factory Chroma.fromLAB(double l, double a, double b, [double opacity = 1.0]) {
+    assert(l >= 0.0);
+    assert(l <= 100.0);
+    assert(a >= -128.0);
+    assert(a <= 128.0);
+    assert(b >= -128.0);
+    assert(b <= 128.0);
+    assert(opacity >= 0.0);
+    assert(opacity <= 1.0);
+
+    final color = parse.fromLAB(l, a, b, opacity);
+
+    return Chroma._(color[0], color[1], color[2]);
+  }
+
   /// Returns the values of the 4 components of the color, which components are
   /// present depends on the color model.
   ///

@@ -1,15 +1,15 @@
-import 'package:chroma/src/conversions.dart' show xyzToRgb;
+import 'package:chroma/src/conversions.dart' show labToRgb;
 import 'package:chroma/src/utils.dart' show toColorValue;
 
-List fromXYZ(double x, double y, double z, double alpha) {
-  final rgb = xyzToRgb(x, y, z);
+List fromLAB(double l, double a, double b, double alpha) {
+  final rgb = labToRgb(l, a, b);
 
   final components = List<double>(4)
-    ..[0] = x
-    ..[1] = y
-    ..[2] = z
+    ..[0] = l
+    ..[1] = a
+    ..[2] = b
     ..[3] = alpha;
-  final format = 'xyz';
+  final format = 'lab';
   final value = toColorValue(rgb[0], rgb[1], rgb[2], alpha);
 
   return List(3)
