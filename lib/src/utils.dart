@@ -41,24 +41,22 @@ int toColorValue(double red, double green, double blue, double alpha) {
   return (a & 0xFF) << 24 | (r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF);
 }
 
+// Electro-optical Transfer Function for the sRGB color space.
 double srgbToLinear(double value) {
-  final a = 0.055;
-
   if (value <= 0.04045) {
     return value / 12.92;
   }
 
-  return math.pow((value + a) / (1 + a), 2.4);
+  return math.pow((value + 0.055) / 1.055, 2.4);
 }
 
+// Opto-electronic Transfer Function for the sRGB color space.
 double linearToSrgb(double value) {
-  final a = 0.055;
-
   if (value <= 0.0031308) {
     return value * 12.92;
   }
 
-  return (1 + a) * math.pow(value, 1 / 2.4) - a;
+  return 1.055 * math.pow(value, 1 / 2.4) - 0.055;
 }
 
 // Convert angle to degree and normalize it in the range [0.0, 360.0)
