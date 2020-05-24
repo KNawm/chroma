@@ -32,7 +32,7 @@ List<double> xyzToLab(double x, double y, double z) {
   final b = 200 * (fy - fz);
 
   return List(3)
-    ..[0] = L.clamp(0, 100)
-    ..[1] = a.clamp(-128, 128)
-    ..[2] = b.clamp(-128, 128);
+    ..[0] = L.clamp(0, 100).toDouble()
+    ..[1] = a.clamp(-128, 128).toDouble()
+    ..[2] = b.clamp(-128, 128).toDouble();
 }

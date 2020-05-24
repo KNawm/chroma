@@ -284,6 +284,16 @@ class Chroma extends Color {
       } else if (component == 'a' || component == 'alpha') {
         return Chroma.fromXYZ(c[0], c[1], c[2], value);
       }
+    } else if (_format == 'lab') {
+      if (component == 'l' || component == 'lightness') {
+        return Chroma.fromLAB(value, c[1], c[2], c[3]);
+      } else if (component == 'a') {
+        return Chroma.fromLAB(c[0], value, c[2], c[3]);
+      } else if (component == 'b') {
+        return Chroma.fromLAB(c[0], c[1], value, c[3]);
+      } else if (component == 'alpha') {
+        return Chroma.fromLAB(c[0], c[1], c[2], value);
+      }
     }
 
     throw ArgumentError.value(component, 'component');

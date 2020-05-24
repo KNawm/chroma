@@ -115,6 +115,17 @@ void main() {
 
       // TODO: Tests with out of range values and examples with scientific notation.
     });
+
+    test('LAB syntax', () {
+      expect(Chroma.fromLAB(60.1697, 93.5511, -60.5002).hashCode, colorFuchsia);
+      expect(Chroma.fromLAB(70.9941, 5.9679, 2.2011, 0.666).hashCode, colorSheep);
+      expect(Chroma.fromLAB(94.2008, 0.3523, 27.0005, 0.8).hashCode, colorFeedback);
+      expect(Chroma.fromLAB(50, 64, 64).hashCode, Color(0xFFDC34FD).hashCode);
+      expect(Chroma.fromLAB(1, 0, 0).hashCode, Color(0xFF040404).hashCode);
+      expect(Chroma.fromLAB(20, 0, 0).hashCode, Color(0xFF303030).hashCode);
+
+      // TODO: Tests with out of range values and examples with scientific notation.
+    });
   });
 
   group('Colors', () {
@@ -124,6 +135,7 @@ void main() {
     final colorHSV = Chroma.fromHSV(300, 1, 1);
     final colorHWB = Chroma.fromHWB(300, 0, 0);
     final colorXYZ = Chroma.fromXYZ(0.5, 0.5, 0.5);
+    final colorLAB = Chroma.fromLAB(50, 64, 64);
 
     test('Format', () {
       expect(colorHEX.format, equals('rgb'));
@@ -132,6 +144,7 @@ void main() {
       expect(colorHSV.format, equals('hsv'));
       expect(colorHWB.format, equals('hwb'));
       expect(colorXYZ.format, equals('xyz'));
+      expect(colorLAB.format, equals('lab'));
     });
 
     test('withComponent functions', () {
@@ -166,12 +179,18 @@ void main() {
       expect(colorXYZ.withValue('Z', 0), equals(Chroma('#EEB30C')));
       expect(colorXYZ.withValue('a', 0), equals(Chroma('#CCB7B4').withOpacity(0)));
 
+      expect(colorLAB.withValue('L', 0), equals(Chroma('#4DC267')));
+      expect(colorLAB.withValue('a', 0), equals(Chroma('#8A76DA')));
+      expect(colorLAB.withValue('B', 0), equals(Chroma('#D3377A')));
+      expect(colorLAB.withValue('alpha', 0), equals(Chroma('#DC34FD').withOpacity(0)));
+
       expect(() => colorHEX.withValue('', 0), throwsArgumentError);
       expect(() => colorRGB.withValue('alpha0', 0), throwsArgumentError);
       expect(() => colorHSL.withValue('value', 0), throwsArgumentError);
       expect(() => colorHSV.withValue('RED', 0), throwsArgumentError);
       expect(() => colorHWB.withValue('null', 0), throwsArgumentError);
       expect(() => colorXYZ.withValue('luma', 0), throwsArgumentError);
+      expect(() => colorLAB.withValue('l*', 0), throwsArgumentError);
     });
 
     test('Components', () {
@@ -181,6 +200,7 @@ void main() {
       expect(colorHSV.components, [300, 1, 1, 1]);
       expect(colorHWB.components, [300, 0, 0, 1]);
       expect(colorXYZ.components, [0.5, 0.5, 0.5, 1]);
+      expect(colorLAB.components, [50, 64, 64, 1]);
 
       expect(colorHEX.toCSS('hex'), '#ff00ff');
       expect(colorRGB.toCSS(), 'rgb(255, 0, 255)');
@@ -188,6 +208,7 @@ void main() {
       expect(colorHSV.toCSS(), 'hsv(300, 100%, 100%)');
       expect(colorHWB.toCSS(), 'hwb(300, 0%, 0%)');
       expect(colorXYZ.toCSS, throwsUnsupportedError);
+      expect(colorLAB.toCSS, throwsUnsupportedError);
 
       expect(colorHEX.toString(), 'Chroma(\'#ff00ff\')');
       expect(colorRGB.toString(), 'Chroma(\'#ff00ff\')');
@@ -195,6 +216,7 @@ void main() {
       expect(colorHSV.toString(), 'Chroma(\'#ff00ff\')');
       expect(colorHWB.toString(), 'Chroma(\'#ff00ff\')');
       expect(colorXYZ.toString(), 'Chroma(\'#ccb7b4\')');
+      expect(colorLAB.toString(), 'Chroma(\'#dc34fd\')');
 
       expect(Chroma('ccccccc5').toCSS('hex'), '#ccccccc5');
       expect(Chroma.fromRGB(0, 0, 255, .5).toCSS(), 'rgba(0, 0, 255, 0.5)');
