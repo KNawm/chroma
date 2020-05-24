@@ -3,6 +3,7 @@ import 'dart:math' as math show pow;
 import 'package:chroma/src/utils.dart' show linearToSrgb;
 
 List<double> xyzToRgb(double x, double y, double z) {
+  // D65 Illuminant 2° observer
   final red   = linearToSrgb(x *  3.2404542 + y * -1.5371385 + z * -0.4985314);
   final green = linearToSrgb(x * -0.9692660 + y *  1.8760108 + z *  0.0415560);
   final blue  = linearToSrgb(x *  0.0556434 + y * -0.2040259 + z *  1.0572252);

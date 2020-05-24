@@ -6,7 +6,12 @@ List<double> labToRgb(double l, double a, double b) {
   final y = xyz[1];
   final z = xyz[2];
 
-  final rgb = xyzToRgb(x, y, z);
+  // Bradford-adapted to D65.
+  final X = x *  0.9555766 + y * -0.0230393 + z * 0.0631636;
+  final Y = x * -0.0282895 + y *  1.0099416 + z * 0.0210077;
+  final Z = x *  0.0122982 + y * -0.0204830 + z * 1.3299098;
+
+  final rgb = xyzToRgb(X, Y, Z);
   final red = rgb[0];
   final green = rgb[1];
   final blue = rgb[2];
@@ -32,9 +37,9 @@ List<double> labToXyz(double l, double a, double b) {
   final z = fz > 6 / 29 ? fz * fz * fz : (1 / k) * (fz - 4 / 29);
 
   // Uses D50 Illuminant as the reference white.
-  final X = x * 0.964212;
-  final Y = y * 1;
-  final Z = z * 0.825188;
+  var X = x * 0.964212;
+  var Y = y * 1;
+  var Z = z * 0.825188;
 
   return List(3)
     ..[0] = X
