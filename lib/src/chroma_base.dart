@@ -148,6 +148,21 @@ class Chroma extends Color {
     return Chroma._(color[0], color[1], color[2]);
   }
 
+  factory Chroma.fromLCH(double lightness, double chroma, double hue, [double opacity = 1.0, AngleUnit angleUnit = AngleUnit.deg]) {
+    assert(lightness >= 0.0);
+    assert(lightness <= 100.0);
+    assert(chroma >= 0.0);
+    assert(chroma <= 132.0);
+    assert(hue >= 0.0);
+    assert(hue <= 360.0);
+    assert(opacity >= 0.0);
+    assert(opacity <= 1.0);
+
+    final color = parse.fromLCH(lightness, chroma, hue, opacity);
+
+    return Chroma._(color[0], color[1], color[2]);
+  }
+
   /// Returns the values of the 4 components of the color, which components are
   /// present depends on the color model.
   ///
@@ -293,6 +308,16 @@ class Chroma extends Color {
         return Chroma.fromLAB(c[0], c[1], value, c[3]);
       } else if (component == 'alpha') {
         return Chroma.fromLAB(c[0], c[1], c[2], value);
+      }
+    } else if (_format == 'lch') {
+      if (component == 'l' || component == 'lightness') {
+        return Chroma.fromLCH(value, c[1], c[2], c[3]);
+      } else if (component == 'c') {
+        return Chroma.fromLCH(c[0], value, c[2], c[3]);
+      } else if (component == 'h') {
+        return Chroma.fromLCH(c[0], c[1], value, c[3]);
+      } else if (component == 'a' || component == 'alpha') {
+        return Chroma.fromLCH(c[0], c[1], c[2], value);
       }
     }
 
