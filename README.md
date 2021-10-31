@@ -20,3 +20,7 @@
     <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" title="License" />
   </a>
 </p>
+
+<h2 align="center">
+  Currently discontinued
+</h2>
